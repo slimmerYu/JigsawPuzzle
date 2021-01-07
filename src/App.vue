@@ -1,32 +1,38 @@
+<!--
+ * @Description: 
+ * @version: 
+ * @Author: slimmerYu
+ * @Date: 2021-01-06 19:53:02
+ * @LastEditors: slimmerYu
+ * @LastEditTime: 2021-01-07 21:02:56
+-->
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-main>
+      <Navbar v-show="showNav"/>
+      <router-view></router-view>
+    </v-main>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+// import HelloWorld from './components/HelloWorld';
+import Navbar from './components/Navbar'
+export default {
+  name: 'App',
 
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+  components: {
+    Navbar
+  },
+  data: () => ({ 
+    showNav: false//控制Navbar的显示,在登录页不显示,用户成功登录后显示
+  }),
+  watch: {
+    '$route'() {
+      console.log(this.$route.name);
+      this.showNav = this.$route.name !== '/login'
+      console.log(this.showNav);
+    }
+  }
+};
+</script>
