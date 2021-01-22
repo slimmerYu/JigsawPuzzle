@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 20:00:06
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-01-06 20:12:40
+ * @LastEditTime: 2021-01-11 08:13:52
  */
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib/framework';
@@ -13,7 +13,7 @@ Vue.use(Vuetify);
 
 export default new Vuetify({
   icons: {
-    iconfont: 'mdiSvg', // 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg'
+    iconfont: 'mdiSvg'|| 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg'
   },
   theme: {
     themes: {

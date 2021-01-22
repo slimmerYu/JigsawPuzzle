@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 20:23:22
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-01-07 22:18:02
+ * @LastEditTime: 2021-01-22 20:53:12
 -->
 <template>
   <nav>
@@ -19,8 +19,7 @@
       </v-app-bar-title>
       <v-spacer></v-spacer>
       <v-btn 
-        text 
-        color="white" 
+        color="white"
         class="grey--text">
         <span>Sign Out</span>
         <v-icon right>mdi-exit-to-app</v-icon>
@@ -29,41 +28,39 @@
     <v-navigation-drawer app 
       v-model="drawer" 
       class="primary">
-      <v-row justify="center">
-        <v-col class="mt-5">
-          <v-avatar size="100">
-            <img src="avater-1.png" alt="">
-          </v-avatar>
-          <p class="white--text subheading mt-1">
-            {{$store.state.user_tel}}
-          </p>
+      <v-container>
+      <v-row class="mt-4 mb-16">
+        <v-col class="mb-16 text-center" text>
+            <v-avatar size="100" color="success">
+              <img src="~assets/img/puzzle.png" alt="">
+            </v-avatar>
+            <p class="white--text mt-10">
+              {{$store.state.user_tel}}
+            </p>
         </v-col>
       </v-row>
-      <!-- <v-list text>
-        <v-list-item 
-          v-for="link in links" 
-          :key="link.text" 
-          router :to="link.route">
-          <v-list-item-icon>
-            <v-icon class="white--text"  
-            v-text="link.icon"></v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title 
-              class="white--text" 
-              v-text="link.text"></v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list> -->
-      <v-btn 
-        text 
-        color="white" 
-        class="grey--text"
-        router to="/login"
+      <v-row class="mt-16">
+        <v-col class="text-center mt-16" text>
+          <v-btn 
+            text 
+            color="white" 
+            class="white--text"
+            @click="logOut()"
+            >
+            <span>Sign Out</span>
+            <v-icon right>mdi-exit-to-app</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+      </v-container>
+      <v-footer padless absolute>
+        <v-col
+          class="text-center"
+          cols="12"
         >
-        <span>Sign Out</span>
-        <v-icon right>mdi-exit-to-app</v-icon>
-      </v-btn>
+          Copyright © 2021 slimmerYu. All rights reserved. 
+        </v-col>
+      </v-footer>
     </v-navigation-drawer>
   </nav>
 </template>
@@ -72,7 +69,14 @@
 export default {
   data: () => ({
     drawer: null 
-  })
+  }),
+  methods: {
+    logOut() {
+      
+      this.$router.replace({path: '/login'});
+      location.reload();
+    }
+  }
 }
 </script>
 

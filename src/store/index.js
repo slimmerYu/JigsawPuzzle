@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 19:53:02
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-01-07 22:08:52
+ * @LastEditTime: 2021-01-08 08:31:19
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
