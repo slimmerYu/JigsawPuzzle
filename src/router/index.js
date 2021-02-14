@@ -4,11 +4,11 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 19:53:02
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-01-06 20:53:04
+ * @LastEditTime: 2021-01-28 15:44:45
  */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from 'views/Home.vue'
+import Home from 'views/home/Home.vue'
 import Login from 'views/Login.vue'
 
 Vue.use(VueRouter)
@@ -23,7 +23,8 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
-  }
+  },
+
 ]
 
 const router = new VueRouter({
