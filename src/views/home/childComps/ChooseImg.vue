@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-28 16:17:42
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-13 21:50:46
+ * @LastEditTime: 2021-02-14 18:59:22
 -->
 <template>
   <div class="chooseImg">
@@ -271,26 +271,9 @@ export default {
     };
   },
   methods: {
-    // 将本地图片转为base64格式
-    getBase64Image(img) {
-      let canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      let ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      let dataURL = canvas.toDataURL();
-      return dataURL;
-    },
+    // 默认图片
     defaultImg() {
       this.imgUrl = require("../../../assets/img/004.jpg");
-      // let _this = this
-      // let img = "../../../assets/img/004.jpg";
-      // let image = new Image();
-      // image.src = img;
-      // image.onload = function() {
-      //   _this.imgUrl = _this.getBase64Image(image);
-      // }
-      // console.log(_this.imgUrl);
       this.$emit("imgUrl", this.imgUrl);
     },
     // PC打开相机

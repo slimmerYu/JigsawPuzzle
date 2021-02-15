@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 19:53:02
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-14 16:37:44
+ * @LastEditTime: 2021-02-14 20:32:46
 -->
 <template>
   <div class="home">
@@ -1044,6 +1044,35 @@ export default {
   //     return file
       return new Blob([ab], { type: "image/jpeg" });
     },
+    // 将本地图片转为base64格式
+    getBase64Image(img) {
+      let canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      let ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      let dataURL = canvas.toDataURL();
+      return dataURL;
+    },
+    // 将本地图片转为base64格式, 以promise返回
+    getSImg() {
+      // 将本地图片转为base64, 再转为blob传递给后端
+      return new Promise( res => {
+        let sImg
+        // 一定要设置为let，不然图片不显示
+        let image = new Image();
+        // 解决跨域问题
+        image.setAttribute('crossOrigin', 'anonymous');
+        let imageUrl = this.imgUrl;
+        image.src = imageUrl;
+        // image.onload为异步加载
+        image.onload = () => {
+          sImg = this.getBase64Image(image);
+          console.log('base64',sImg);
+          res(sImg)
+        }
+      })
+    },
     // 保存游戏进度
     saveProgress() {
       // 保存名称
@@ -1055,25 +1084,32 @@ export default {
       let sTime = time.toLocaleString();
       // 保存当前拼图难度
       let sLevel = this.cols === 4 ? 3 : this.cols === 3 ? 4 : 5;
+      let sUser = this.$store.state.user_tel
+      
+      let formData = new FormData();  
       // 保存当前拼图图片
       let sImg
-      // 判断当前图片地址是否为base64
       if (this.imgUrl.indexOf("data:image") > -1) {
         // base64 图片操作
         // 将图片转换为blob格式传给后台
         sImg = this.convertBase64UrlToBlob(this.imgUrl)
+        formData.append("files", sImg ,"file_"+Date.parse(new Date())+".jpeg"); 
       } else {
         // path 图片操作
-        // 直接传入字符串localimg
-        sImg = "localImg"
-      }
-      let sUser = this.$store.state.user_tel
-      var formData = new FormData();  
-      formData.append("files", sImg ,"file_"+Date.parse(new Date())+".jpeg");  
+        this.getSImg().then((res) => {
+          sImg = this.convertBase64UrlToBlob(res)
+          formData.append("files", sImg ,"file_"+Date.parse(new Date())+".jpeg"); 
+        })
+        
+      } 
+//        formData.append('name', this.name)
+//  formData.append('age', this.age)
+//  formData.append('file', this.file)
       if (this.saveTitle !== null) {
         // 将时间, 拼图难度, 数组值存入服务器,保存成功,弹出提示框, 提示保存完成
         console.log(sTitle, sPuzzle, sTime, sLevel, sImg, sUser);
         this.$axios.post('http://a.wpengsen.cn:8989/upload',formData).then(res=>{
+          // 保存成功, 提示用户保存成功
           console.log(res)
         })
         // 关闭保存进度对话框
