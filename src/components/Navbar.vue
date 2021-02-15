@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 20:23:22
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-15 14:59:09
+ * @LastEditTime: 2021-02-15 18:03:10
 -->
 <template>
   <nav>
@@ -49,10 +49,13 @@
       <v-container>
         <v-row class="mt-4 mb-16">
           <v-col class="text-center" text cols="12">
-            <v-avatar size="80" color="success" >
+            <!-- <v-avatar size="80" color="success" >
               <img src="~assets/img/puzzle.png" alt="" />
-            </v-avatar>
-            <!-- <CheckAvatar :drawer="drawer" @changeDrawer="changeDrawer"/> -->
+            </v-avatar> -->
+            <!-- 头像 -->
+              
+            <CheckAvatar/>
+            <!-- 用户手机号 -->
             <p class="white--text mt-10">
               {{ $store.state.user_tel }}
             </p>
@@ -89,23 +92,20 @@
 </template>
 
 <script>
-// import CheckAvatar from './common/CheckAvatar'
+import CheckAvatar from './common/CheckAvatar'
 export default {
   components: {
-    // CheckAvatar
+    CheckAvatar
   },
   data: () => ({
     drawer: null,
+    avatarUrl:require('../assets/img/puzzle.png')
   }),
   methods: {
     logOut() {
       this.$router.replace({ path: "/login" });
       location.reload();
     },
-    // changeDrawer(param) {
-    //   this.drawer = param
-    //   console.log(this.drawer);
-    // }
   },
 };
 </script>

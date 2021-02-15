@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-28 16:17:42
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-14 18:59:22
+ * @LastEditTime: 2021-02-15 17:37:11
 -->
 <template>
   <div class="chooseImg">
@@ -108,24 +108,23 @@
           <vueCropper
             ref="cropper"
             :img="option.img"
-            :outputSize="option.size"
-            :outputType="option.outputType"
-            :info="true"
-            :full="option.full"
-            :canMove="option.canMove"
-            :canMoveBox="option.canMoveBox"
-            :original="option.original"
-            :autoCrop="option.autoCrop"
-            :fixed="option.fixed"
-            :fixedNumber="option.fixedNumber"
-            :centerBox="option.centerBox"
-            :infoTrue="option.infoTrue"
-            :fixedBox="option.fixedBox"
-            :autoCropWidth="option.autoCropWidth"
-            :autoCropHeight="option.autoCropHeight"
-            :high="option.high"
-            :mode="option.mode"
-            :enlarge="option.enlarge"
+          :outputSize="option.outputSize"
+          :outputType="option.outputType"
+          :info="option.info"
+          :full="option.full"
+          :autoCropWidth="option.autoCropWidth"
+          :autoCropHeight="option.autoCropHeight"
+          :canMove="option.canMove"
+          :canMoveBox="option.canMoveBox"
+          :original="option.original"
+          :autoCrop="option.autoCrop"
+          :fixed="option.fixed"
+          :fixedNumber="option.fixedNumber"
+          :centerBox="option.centerBox"
+          :infoTrue="option.infoTrue"
+          :fixedBox="option.fixedBox"
+          :high="option.high"
+          :mode="option.mode"
           ></vueCropper>
         </v-col>
       </v-row>
@@ -248,25 +247,24 @@ export default {
       isShow: false, //控制拍照页[video, canvas, 确认, 重新拍照]的显示与隐藏
       // 裁剪组件的基础配置option
 				option: {
-					img: '', // 裁剪图片的地址
-					info: true, // 裁剪框的大小信息
-					outputSize: 1, // 裁剪生成图片的质量
-					outputType: 'jpeg', // 裁剪生成图片的格式
-					canScale: true, // 图片是否允许滚轮缩放
-					autoCrop: true, // 是否默认生成截图框
-					autoCropWidth: window.innerWidth + 'px', // 默认生成截图框宽度
-					autoCropHeight:  window.innerWidth + 'px', // 默认生成截图框高度
-					fixedBox: false, // 固定截图框大小 不允许改变
-					fixed: true, // 是否开启截图框宽高固定比例
-					fixedNumber: [1, 1], // 截图框的宽高比例
-					full: true, // 是否输出原图比例的截图
-					canMoveBox: true, // 截图框能否拖动
-					original: true, // 上传图片按照原始比例渲染
-					centerBox: true, // 截图框是否被限制在图片里面
-          infoTrue: false, // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
-          mode: 'contain auto', // 图片默认渲染方式
-           high: true, // 是否按照设备的dpr 输出等比例图片
-           enlarge: 1 //图片根据截图框输出比例倍数
+				img: "",
+      outputSize: 0.8,
+      info: false, // 裁剪框的大小信息
+      outputType: "jpeg", // 裁剪生成图片的格式
+      canScale: false, // 图片是否允许滚轮缩放
+      autoCrop: true, // 是否默认生成截图框
+      autoCropWidth: window.innerWidth - 100 + "px", // 默认生成截图框宽度
+      autoCropHeight: window.innerWidth - 100 + "px", // 默认生成截图框高度
+      high: true, // 是否按照设备的dpr 输出等比例图片
+      fixedBox: true, // 固定截图框大小 不允许改变
+      fixed: true, // 是否开启截图框宽高固定比例
+      fixedNumber: [1, 1], // 截图框的宽高比例
+      full: true, // 是否输出原图比例的截图
+      canMoveBox: false, // 截图框能否拖动
+      original: false, // 上传图片按照原始比例渲染
+      centerBox: false, // 截图框是否被限制在图片里面
+      infoTrue: false, // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
+      mode: "100% auto", // 图片默认渲染方式
 				},
     };
   },
