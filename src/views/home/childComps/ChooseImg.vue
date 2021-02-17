@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-28 16:17:42
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-15 17:37:11
+ * @LastEditTime: 2021-02-15 20:35:25
 -->
 <template>
   <div class="chooseImg">
@@ -88,18 +88,18 @@
     >
       <v-row
         align="center"
-        style="position: absolute; z-index: 999; width: 100%"
+        style="position: absolute; z-index: 999; width: 100%; bottom:15px"
         class="ma-0 pt-4"
       >
         <v-col cols="4">
           <v-btn icon @click="fileModal = false">
-            <v-icon large> mdi-chevron-down </v-icon>
+            <v-icon > mdi-close </v-icon>
           </v-btn>
         </v-col>
         <v-col cols="4"></v-col>
         <v-col cols="4">
           <v-btn @click="submitPhoto()">
-            <v-icon dark large> mdi-check </v-icon>
+            <v-icon dark > mdi-check </v-icon>
           </v-btn>
         </v-col>
       </v-row>

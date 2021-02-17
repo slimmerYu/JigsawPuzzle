@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-02-15 14:19:16
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-15 18:08:13
+ * @LastEditTime: 2021-02-15 20:32:35
 -->
 <template>
   <div class="check-avatar">
@@ -33,19 +33,24 @@
           :absolute="false"
           :value="fileModal"
         >
-          <v-row
+        <v-row
             align="center"
-            style="position: absolute; z-index: 999; width: 100%"
+            style="position: absolute; z-index: 999; width: 100%; bottom:14px"
             class="ma-0 pt-4"
           >
-            <v-col cols="4">
+            <v-col cols="4" class="text-center">
               <v-btn icon dark @click="fileModal = false">
-                <v-icon large> mdi-close </v-icon>
+                <v-icon> mdi-close </v-icon>
               </v-btn>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="4"  class="text-center">
+              <v-btn @click="rotateImage()">
+                <v-icon dark> mdi-rotate </v-icon>
+              </v-btn>
+            </v-col>
+            <v-col cols="4"  class="text-center">
               <v-btn @click="submitPhoto()">
-                <v-icon dark large> mdi-check </v-icon>
+                <v-icon dark> mdi-check </v-icon>
               </v-btn>
             </v-col>
           </v-row>
@@ -74,6 +79,7 @@
               ></vueCropper>
             </v-col>
           </v-row>
+          
         </v-overlay>
         <v-toolbar dark color="black">
           <v-btn icon dark @click="dialog = false">
@@ -173,13 +179,21 @@ export default {
         this.$refs.photoFile.value = "";
       }
     },
+    // 旋转图片
+    rotateImage() {
+      this.$refs.cropper.rotateRight();
+    },
     // 获取截图
     submitPhoto() {
       // 获取截图的base64数据
       let formData = new FormData();
       this.$refs.cropper.getCropData((data) => {
         this.avatarUrl = data;
-        formData.append("avatar", data, "avatar_"+Date.parse(new Date())+".jpeg");
+        formData.append(
+          "avatar",
+          data,
+          "avatar_" + Date.parse(new Date()) + ".jpeg"
+        );
         // formData私有类对象，访问不到，可以通过get判断值是否传进去
         // console.log(formData.get("avatar"));
         // 上传头像至服务器

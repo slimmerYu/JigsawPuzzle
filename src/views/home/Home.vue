@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 19:53:02
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-14 20:32:46
+ * @LastEditTime: 2021-02-15 20:38:17
 -->
 <template>
   <div class="home">
@@ -116,7 +116,7 @@
                         <!-- <div class="text-h2 pa-12">Hello world!</div> -->
                         <img
                           :src="imgUrl"
-                          style="width: 100%; height: 100%"
+                          style="width: 86%; "
                           alt=""
                         />
                       </v-card-text>
