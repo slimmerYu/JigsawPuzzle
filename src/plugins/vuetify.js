@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 20:00:06
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-01-11 08:13:52
+ * @LastEditTime: 2021-02-18 21:22:56
  */
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib/framework';
@@ -19,9 +19,9 @@ export default new Vuetify({
     themes: {
       light: {
         primary: '#9652ff',
-        success: '#3cd1c2',
-        info: '#ffaa2c',
-        error: '#f83e70' 
+        success: '#4caf50',
+        info: '#e9f5ea',
+        error: '#ff5252' 
       }
     }
   }
