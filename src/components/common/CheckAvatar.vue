@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-02-15 14:19:16
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-15 20:32:35
+ * @LastEditTime: 2021-02-19 21:22:10
 -->
 <template>
   <div class="check-avatar">
@@ -22,7 +22,7 @@
           color="success"
           @click="avatarModal = true"
         >
-          <img :src="avatarUrl" alt="" />
+          <img :src="$store.state.avatar" alt="" />
         </v-avatar>
       </template>
       <v-card color="black">
@@ -33,9 +33,9 @@
           :absolute="false"
           :value="fileModal"
         >
-        <v-row
+          <v-row
             align="center"
-            style="position: absolute; z-index: 999; width: 100%; bottom:14px"
+            style="position: absolute; z-index: 999; width: 100%; bottom: 25px"
             class="ma-0 pt-4"
           >
             <v-col cols="4" class="text-center">
@@ -43,12 +43,12 @@
                 <v-icon> mdi-close </v-icon>
               </v-btn>
             </v-col>
-            <v-col cols="4"  class="text-center">
+            <v-col cols="4" class="text-center">
               <v-btn @click="rotateImage()">
                 <v-icon dark> mdi-rotate </v-icon>
               </v-btn>
             </v-col>
-            <v-col cols="4"  class="text-center">
+            <v-col cols="4" class="text-center">
               <v-btn @click="submitPhoto()">
                 <v-icon dark> mdi-check </v-icon>
               </v-btn>
@@ -79,7 +79,6 @@
               ></vueCropper>
             </v-col>
           </v-row>
-          
         </v-overlay>
         <v-toolbar dark color="black">
           <v-btn icon dark @click="dialog = false">
@@ -107,7 +106,7 @@
             <v-list-item-content> -->
         <v-row class="ma-0 mt-16" style="height: 100%">
           <v-col cols="12" class="pa-0" align-self="center">
-            <img style="width: 100%" :src="avatarUrl" alt="" />
+            <img style="width: 100%" :src="$store.state.avatar" alt="" />
           </v-col>
         </v-row>
         <!-- </v-list-item-content>
@@ -120,13 +119,15 @@
 
 <script>
 import { VueCropper } from "vue-cropper";
+import {changeAvatar} from "network/user";
 export default {
   components: {
     VueCropper,
   },
   data: () => ({
     snackbar: false,
-    avatarUrl: require("../../assets/img/puzzle.png"),
+    // avatarUrl: require("../../assets/img/puzzle.png"),
+    avatarUrl: "",
     dialog: false,
     fileModal: false,
     option: {
@@ -162,6 +163,7 @@ export default {
       let file = this.$refs.photoFile.files[0]; //相册选择的
 
       if (/.(png|jpg|jpeg|JPG|JPEG)$/.test(file.name)) {
+   
         let fr = new FileReader();
         fr.readAsDataURL(file);
         fr.onload = (e) => {
@@ -187,21 +189,50 @@ export default {
     submitPhoto() {
       // 获取截图的base64数据
       let formData = new FormData();
+      let id = this.$store.state.id
       this.$refs.cropper.getCropData((data) => {
-        this.avatarUrl = data;
+        // console.log(data);
+        this.$store.commit('changeAvatar',data)
+        data = this.convertBase64UrlToBlob(data)
+        // console.log(data);
         formData.append(
-          "avatar",
+          "file",
           data,
           "avatar_" + Date.parse(new Date()) + ".jpeg"
         );
         // formData私有类对象，访问不到，可以通过get判断值是否传进去
-        // console.log(formData.get("avatar"));
+        console.log(formData.get("file"));
+        console.log(id);
+        formData.append("id",id)
         // 上传头像至服务器
+        changeAvatar(formData).then(res => {
+          console.log(res);
+          // 提示上传成功
+        })
+        // 使用mutation更改state.avatar
         this.fileModal = !this.fileModal;
         this.dialog = !this.dialog;
       });
     },
+      // 将base64转为blob
+    convertBase64UrlToBlob(urlData) {
+      var bytes = window.atob(urlData.split(",")[1]); //去掉url的头，并转换为byte //处理异常,将ascii码小于0的转换为大于0
+      var ab = new ArrayBuffer(bytes.length);
+      var ia = new Uint8Array(ab);
+      for (var i = 0; i < bytes.length; i++) {
+        ia[i] = bytes.charCodeAt(i);
+      }
+  //     let file = new File([ia], 'imgurl', {
+  //     type: 'image/jpg'
+  //  })   
+  //     return file
+      return new Blob([ab], { type: "image/jpeg" });
+    },
   },
+  mounted() {
+    this.avatarUrl = '"' + this.$store.state.avatar + '"'
+  }
+  
 };
 </script>
 
