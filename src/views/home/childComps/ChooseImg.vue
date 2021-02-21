@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-28 16:17:42
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-15 20:35:25
+ * @LastEditTime: 2021-02-21 15:19:13
 -->
 <template>
   <div class="chooseImg">
@@ -129,11 +129,11 @@
         </v-col>
       </v-row>
     </v-overlay>
-
+<!-- PC端 -->
     <!-- 选择图片 -->
     <v-dialog transition="dialog-top-transition" max-width="600">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn elevation="1" outlined color="primary" v-bind="attrs" v-on="on"
+        <v-btn style="margin:auto" class="d-none d-sm-flex" elevation="1" outlined color="primary" v-bind="attrs" v-on="on"
           >选择图片</v-btn
         >
       </template>
@@ -187,7 +187,7 @@
               <!-- 相册 -->
               <v-list-item
                 @click="
-                  albumImg();
+                  pcAlbumImg();
                   dialog.value = false;
                 "
               >
@@ -200,7 +200,7 @@
                     <input
                       type="file"
                       hidden
-                      ref="photoFile"
+                      ref="pcPhotoFile"
                       accept="image/*"
                       @change="fileChange"
                       style="display: none"
@@ -229,6 +229,92 @@
         </v-card>
       </template>
     </v-dialog>
+    <!-- 移动端选择图片 -->
+    <v-bottom-sheet v-model="sheet">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+         elevation="1" 
+         outlined 
+         color="primary"
+          v-bind="attrs"
+          v-on="on"
+          class="d-flex d-sm-none"
+        >
+          选择图片
+        </v-btn>
+      </template>
+      <v-list>
+        <v-subheader>
+          <p >选择图片</p> 
+        </v-subheader>
+              <!-- 拍照2 -->
+              <v-list-item
+                class="d-flex d-sm-none "
+                @click="
+                  openFile();
+                  sheet = false;
+                "
+              >
+                <v-list-item-icon>
+                  <v-icon>mdi-camera</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title
+                    >拍照
+                    <input
+                      type="file"
+                      hidden
+                      name="file"
+                      @change="fileChange"
+                      accept="image/*"
+                      ref="cameraFile"
+                      capture="camera"
+                      style="display: none"
+                    />
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider></v-divider>
+              <!-- 相册 -->
+              <v-list-item
+                @click="
+                  albumImg();
+                  sheet = false;
+                "
+              >
+                <v-list-item-icon>
+                  <v-icon>mdi-image</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title
+                    >相册
+                    <input
+                      type="file"
+                      hidden
+                      ref="photoFile"
+                      accept="image/*"
+                      @change="fileChange"
+                      style="display: none"
+                    />
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider></v-divider>
+              <v-list-item
+                @click="
+                  defaultImg();
+                  sheet = false;
+                "
+              >
+                <v-list-item-icon>
+                  <v-icon>mdi-cursor-default</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>默认图片</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+      </v-list>
+    </v-bottom-sheet>
   </div>
 </template>
 
@@ -266,13 +352,36 @@ export default {
       infoTrue: false, // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
       mode: "100% auto", // 图片默认渲染方式
 				},
+        sheet: false,//控制底部工作表
     };
   },
   methods: {
+     // 将本地图片转为base64格式
+    getBase64Image(img) {
+      let canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      let ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      let dataURL = canvas.toDataURL();
+      return dataURL;
+    },
     // 默认图片
     defaultImg() {
-      this.imgUrl = require("../../../assets/img/004.jpg");
-      this.$emit("imgUrl", this.imgUrl);
+      let imgUrl = require("../../../assets/img/imgPuzzle.png")
+      
+      // console.log(imgUrl);
+      // this.$emit("imgUrl", this.imgUrl);
+       // 一定要设置为let，不然图片不显示
+        let image = new Image();
+        image.src = imgUrl;
+        // image.onload为异步加载
+        image.onload = () => {
+          imgUrl = this.getBase64Image(image)
+      this.$store.commit('changeImgUrl',imgUrl)
+        this.$emit("imgUrl", "success");
+        };
+      
     },
     // PC打开相机
     cameraImg() {
@@ -347,8 +456,10 @@ export default {
       let dataURL = canvas.toDataURL("image/jpeg"); //dataURL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA'
       console.log(dataURL);
       this.imgUrl = dataURL;
-      this.$emit("imgUrl", this.imgUrl);
+      // this.$emit("imgUrl", this.imgUrl);
+      this.$store.commit('changeImgUrl',dataURL)
 
+        this.$emit("imgUrl", "success");
       this.closeVideo();
     },
     // 关闭摄像头
@@ -368,6 +479,12 @@ export default {
             // console.log(this.$refs.photoFile);
       // this.fileModal = true;
     },
+    pcAlbumImg() {
+      // document.querySelector("#imgReader").click();
+            this.$refs.pcPhotoFile.click();
+            // console.log(this.$refs.photoFile);
+      // this.fileModal = true;
+    },
     // 修改图片尺寸
       fileChange() {
       console.log("输出files:", this.$refs.photoFile.files);
@@ -375,7 +492,8 @@ export default {
         if(this.isCamera){
             file = this.$refs.cameraFile.files[0]//相机拍照的
         }else{
-            file = this.$refs.photoFile.files[0];//相册选择的
+            file = this.$refs.photoFile.files[0] || this.$refs.pcPhotoFile.files[0];//相册选择的
+           
         }
       if (/.(png|jpg|jpeg|JPG|JPEG)$/.test(file.name)) {
         let fr = new FileReader();
@@ -386,6 +504,7 @@ export default {
           this.option.img = e.target.result;
           this.fileModal = true;
           this.$refs.photoFile.value = "";
+          this.$refs.pcPhotoFile.value = "";
           this.$refs.cameraFile.value = "";
         };
       } else {
@@ -394,6 +513,7 @@ export default {
           type: "warning"
         });
         this.$refs.photoFile.value = "";
+        this.$refs.pcPhotoFile.value = "";
           this.$refs.cameraFile.value = "";
       }
     },
@@ -401,8 +521,9 @@ export default {
         submitPhoto() {
           // 获取截图的base64数据
       this.$refs.cropper.getCropData(data => {
-        this.imgUrl = data
-        this.$emit("imgUrl", this.imgUrl);
+        // this.imgUrl = data
+      this.$store.commit('changeImgUrl',data)
+        this.$emit("imgUrl", "success");
         // console.log(data);
         this.fileModal = false
       })
