@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 19:53:02
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-01-08 08:31:19
+ * @LastEditTime: 2021-02-21 13:38:50
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -12,15 +12,41 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const state = {
-  user_tel: '' || localStorage.getItem('user_tel')
+  token: '',
+  score:'',//游戏积分
+  phone:'',//用户手机号码
+  avatar:'',//用户头像地址
+  id:'',//用户ID
+  imgUrl: "",//当前拼图图片地址
+  level: 0,//当前拼图等级
+  puzzle: [1,2,3,4,5,6,7,8,0],//当前拼图数组序列
 }
 
 export default new Vuex.Store({
   state,
   mutations: {
-    handleUserName: (state, user_tel) => {
-      state.user_tel = user_tel//// 把登录的用户的名保存到localStorage中，防止页面刷新，导致vuex重新启动，用户名就成为初始值（初始值为空）的情况
-      localStorage.setItem('user_tel', user_tel)
+    set_user: (state, user) => {
+      sessionStorage.token = user.token
+      state.token = user.token
+      state.score = user.grade
+      state.phone = user.phone
+      state.id = user.id
+      state.avatar = user.headPortrait
+    },
+    changeScore: (state, score) => {
+      state.score = score
+    },
+    changeAvatar: (state, avatar) => {
+      state.avatar = avatar
+    },
+    changeImgUrl: (state, imgUrl) => {
+      state.imgUrl = imgUrl
+    },
+    changeLevel: (state, level) => {
+      state.level = level
+    },
+    changePuzzle: (state, puzzle) => {
+      state.puzzle = puzzle
     }
   },
   actions: {
