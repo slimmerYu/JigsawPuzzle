@@ -4,12 +4,30 @@
  * @Author: slimmerYu
  * @Date: 2021-01-07 14:57:29
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-01-07 21:20:12
+ * @LastEditTime: 2021-02-19 23:06:32
  */
 import {request} from "./request"
-
-export function getLoginData() {
+import qs from 'qs'
+export function getLoginData(data) {
+  
   return request ({
-    url: '/login'
+    url: '/login',
+    method: 'post',
+    data,
+    transformRequest: [data => {//data应是一个对象
+      data = qs.stringify(data)
+      return data
+    }],
+  })
+}
+export function getCode(data) {
+  return request ({
+    url: '/sendMsg',
+    method: 'post',
+    data,
+    transformRequest: [data => {//data应是一个对象
+      data = qs.stringify(data)
+      return data
+    }],
   })
 }
