@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 19:53:02
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-21 15:21:51
+ * @LastEditTime: 2021-02-22 20:05:40
 -->
 <template>
   <div class="home">
@@ -29,9 +29,11 @@
           <!-- 拼图面板 -->
           <v-container class="pa-0">
             <v-row no-gutters class="puzzle mx-auto">
+
               <v-col
                 :cols="stateLevel === 0 ? 4 : stateLevel === 1 ? 3 : 0"
                 @click.prevent="clickBlock(index)"
+                :index=index
                 v-for="(puzzle, index) in statePuzzle"
                 :key="puzzle"
                 v-text="puzzle"
@@ -94,7 +96,7 @@
                 <v-bottom-sheet v-model="sheet">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                      class="d-flex d-sm-none"
+                      class="d-flex d-sm-none  ma-auto"
                       color="primary"
                       elevation="1"
                       outlined
@@ -122,13 +124,19 @@
               </v-col>
               <!-- 打乱拼图 -->
               <v-col md="12" cols="4" text class="text-center mb-4">
-                <v-btn id="btnShuffle" elevation="1" outlined @click="shuffle" color="primary">
+                <v-btn
+                  id="btnShuffle"
+                  elevation="1"
+                  outlined
+                  @click="shuffle"
+                  color="primary"
+                >
                   打乱拼图
                 </v-btn>
               </v-col>
               <!-- 查看原图 -->
               <v-col md="12" cols="4" text class="text-center mb-4">
-                <v-dialog transition="dialog-top-transition" max-width="600">
+                <v-dialog max-width="600">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
                       elevation="1"
@@ -142,7 +150,7 @@
                   </template>
                   <template v-slot:default="dialog">
                     <v-card>
-                      <v-toolbar color="primary" dark>查看原图</v-toolbar>
+                      <v-card-title class="title"> 查看原图 </v-card-title>
                       <v-card-text class="text-center pa-0 pt-2">
                         <!-- <div class="text-h2 pa-12">Hello world!</div> -->
                         <img :src="stateImgUrl" style="width: 86%" alt="" />
@@ -178,8 +186,8 @@
                 </v-btn>
               </v-col>
               <!-- 保存进度 -->
-              <v-col md="12" cols="6" text class="text-center mb-4">
-                <v-dialog transition="dialog-top-transition" max-width="600">
+              <v-col md="12" cols="4" text class="text-center mb-4">
+                <v-dialog max-width="600">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
                       color="primary"
@@ -194,7 +202,7 @@
                   </template>
                   <template v-slot:default="dialog">
                     <v-card>
-                      <v-toolbar color="primary" dark>保存进度</v-toolbar>
+                       <v-card-title class="title"> 保存进度 </v-card-title>
                       <v-card-text>
                         <v-container>
                           <v-row>
@@ -220,12 +228,26 @@
                   </template>
                 </v-dialog>
               </v-col>
+              <!-- 提示 -->
+              <v-col md="12" cols="4" text class="text-center mb-4">
+                <v-badge :content="tipStep" :value="tipStep" overlap>
+                  <v-btn
+                    id="btnTip"
+                    elevation="1"
+                    outlined
+                    color="primary"
+                    @click="tips"
+                  >
+                    提示
+                  </v-btn>
+                </v-badge>
+              </v-col>
               <!-- 读取进度 -->
-              <v-col md="12" cols="6" text class="text-center mb-4">
+              <v-col md="12" cols="4" text class="text-center mb-4">
                 <v-dialog
-                  transition="dialog-top-transition"
                   max-width="600"
                   scrollable
+      persistent
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -240,25 +262,25 @@
                   </template>
                   <template v-slot:default="dialog">
                     <v-card>
-                      <v-toolbar color="primary" dark>选择游戏进度</v-toolbar>
+                       <v-card-title class="title"> 选择游戏进度 </v-card-title>
                       <v-divider></v-divider>
-                      <v-card-text style="height: 300px" class="">
+                      <v-card-text style="height: 350px" class="">
                         <v-radio-group v-model="progress" column>
                           <v-radio
-                            v-for="(radio,index) in progressData"
+                            v-for="(radio, index) in progressData"
                             :key="index"
                             :value="index"
-                            style="border-bottom:1px solid #F3E5F5"
+                            style="border-bottom: 1px solid #f3e5f5"
                           >
                             <template v-slot:label>
                               <v-row class="ma-0 pa-2">
                                 <v-col class="pa-0 mb-2 text-h5" cols="12">
-                                {{radio.title}}
+                                  {{ radio.title }}
                                 </v-col>
                                 <v-col class="pa-0" cols="12">
-                                  保存时间: 
-                                  
-                                {{radio.createTime | formatDate}}
+                                  保存时间:
+
+                                  {{ radio.createTime | formatDate }}
                                 </v-col>
                               </v-row>
                             </template>
@@ -268,16 +290,30 @@
                       <v-divider></v-divider>
                       <v-card-actions>
                         <v-btn text @click="delProgress">删除</v-btn>
-                        <v-btn text @click="dialog.value = false;chooseProgress()">选择</v-btn>
-                        <v-btn text @click="dialog.value = false">关闭</v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          text
+                          @click="
+                            dialog.value = false;
+                            chooseProgress();
+                          "
+                          >选择</v-btn
+                        >
+                        
+                        <v-spacer></v-spacer>
+                        <v-btn text @click="dialog.value = false;progress = ''">关闭</v-btn>
                       </v-card-actions>
                     </v-card>
                   </template>
                 </v-dialog>
               </v-col>
-              <v-snackbar v-model="progressSnackbar" 
-      :timeout="2000" centered color="primary">
-                {{progressSnackbarText}}
+              <v-snackbar
+                v-model="progressSnackbar"
+                :timeout="2000"
+                centered
+                color="primary"
+              >
+                {{ progressSnackbarText }}
                 <template v-slot:action="{ attrs }">
                   <v-btn
                     color="white"
@@ -289,11 +325,36 @@
                   </v-btn>
                 </template>
               </v-snackbar>
+              <v-overlay
+          :value="overlayAuto"
+          opacity="0.4"
+          absolute
+        >
+        <v-row class="text-center text-h5" style="bottom:18%;position:absolute;left:52%;transform:translateX(-50%)">
+          <v-col cols="12">
+            剩余  {{autoStep}}  步
+          </v-col>
+          <!-- <v-col cols="12">
+            
+          <v-btn
+          large
+          class="text-h6"
+          outlined
+            @click="overlayAuto = false;stopAutoPlay()"
+          >
+            停止自动拼图
+          </v-btn>
+          </v-col> -->
+        </v-row>
+        </v-overlay>
             </v-row>
           </v-container>
         </v-col>
       </v-row>
     </v-container>
+    <v-row class="ma-0 text-right" style="bottom:2%;position:absolute;right:8%;">
+      <Help/>
+    </v-row>
   </div>
 </template>
 
@@ -304,18 +365,20 @@
 import _ from "lodash";
 // import qs from "qs";
 import ChooseImg from "./childComps/ChooseImg.vue";
+import Help from "./childComps/Help.vue";
 import {
   getPuzzle,
   autoPlay,
   saveProgress,
   getProgress,
   addScore,
-  deletePro
+  deletePro,
 } from "network/puzzle";
 export default {
   name: "Home",
   components: {
     ChooseImg,
+    Help
   },
   data: () => ({
     // puzzles: [],
@@ -339,8 +402,10 @@ export default {
     },
     isAuto: false, //判断是否使用了自动拼图功能
     progressSnackbar: false, //进度消息条
-    progressSnackbarText:'',//进度消息条内容
-    resizePuzzle:[],//用于窗口大小变化重新赋值puzzle
+    progressSnackbarText: "", //进度消息条内容
+    tipStep: 0, //提示按钮右上角徽章数据展示剩余提示步骤
+    overlayAuto: false,//自动拼图时的遮罩层, 用于提示用户剩余步数, 防止用户执行其他操作, 可终止自动拼图
+    autoStep: 0,//自动拼图步数
   }),
   computed: {
     stateImgUrl() {
@@ -351,25 +416,28 @@ export default {
     },
     statePuzzle() {
       return this.$store.state.puzzle;
-    }
+    },
   },
   filters: {
     // 将时间戳转换为时间
-    formatDate(value){
-	var date = new Date(value * 1000) //时间戳为10位需*1000，时间戳为13位的话不需乘1000
-        var Y = date.getFullYear() + '-'
-        var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'
-        var D = date.getDate() + ' '
-        var h = date.getHours() + ':'
-        var m = date.getMinutes() + ':'
-        var s = date.getSeconds()
-        return Y+M+D+h+m+s
-  }
+    formatDate(value) {
+      var date = new Date(value * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      var Y = date.getFullYear() + "-";
+      var M =
+        (date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1) + "-";
+      var D = date.getDate() + " ";
+      var h = date.getHours() + ":";
+      var m = date.getMinutes() + ":";
+      var s = date.getSeconds();
+      return Y + M + D + h + m + s;
+    },
   },
   methods: {
     // 难度选择:改变每行方块数量,数组长度,方块高度
     levelChoose(index) {
-      this.$store.commit('changeLevel',index)
+      this.$store.commit("changeLevel", index);
       if (this.stateLevel === 0) {
         //初级下标 3*3
         // this.cols = 4;
@@ -406,42 +474,39 @@ export default {
     autoPlay() {
       this.isAuto = !this.isAuto;
       let level = this.stateLevel === 0 ? 3 : this.stateLevel === 1 ? 4 : 5;
-      // switch (this.stateLevel) {
-      //   case 4:
-      //     level = 3;
-      //     break;
-      //   case 3:
-      //     level = 4;
-      //     break;
-      //   case 0:
-      //     level = 5;
-      //     break;
-
-      //   default:
-      //     break;
-      // }
       console.log("获取后台步骤数据");
       const _this = this;
-      autoPlay({ node: _.join(this.statePuzzle, ","), num: level }).then((res) => {
-        console.log(res);
-        // 如果请求成功,执行点击方法,自动复原
-        if (res.data.code === 200) {
-          //通过步骤,for循环调用点击方法
-          let step = res.data.data.simpleProcess;
-          for (let i = 0; i < step.length; i++) {
-            (function () {
-              //将延时器整个的包裹在一个子执行函数中
-              setTimeout(() => {
-                console.log(step[i]);
-                _this.clickBlock(step[i]);
-              }, i * 500); //想要每隔0.5秒调用一次，而不是同时调用，要将参数传进时间中
-            })(i); //把每个循环中的 i 在被回收之前直接传入到自执行函数中，这样就可以避免被回收
+      
+      autoPlay({ node: _.join(this.statePuzzle, ","), num: level }).then(
+        (res) => {
+          console.log(res);
+          // 如果请求成功,执行点击方法,自动复原
+          if (res.data.code === 200) {
+            //通过步骤,for循环调用点击方法
+            let step = res.data.data.simpleProcess;
+            _this.autoStep = step.length - 1
+            _this.tipStep = 0
+            document.querySelector('#btnTip').classList.add("v-btn--disabled");
+            _this.overlayAuto = true
+            for (let i = 1; i < step.length; i++) {
+              (function () {
+                //将延时器整个的包裹在一个子执行函数中
+                setTimeout(() => {
+                  console.log(step[i]);
+                  _this.clickBlock(step[i]);
+                  _this.autoStep --
+                }, i * 500); //想要每隔0.5秒调用一次，而不是同时调用，要将参数传进时间中
+              })(i); //把每个循环中的 i 在被回收之前直接传入到自执行函数中，这样就可以避免被回收
+            }
+          } else {
+            //弹出提示框,请求有误,重新尝试
+            console.log("请求有误");
           }
-        } else {
-          //弹出提示框,请求有误,重新尝试
-          console.log("请求有误");
+          
+            
         }
-      });
+      );
+     
       // this.$axios
       //   .post(
       //     "http://a.wpengsen.cn:8989/puzzle/automaticCalculation",
@@ -474,19 +539,19 @@ export default {
       this.canClick();
       // 向后台传入当前游戏等级, 请求打乱的序列
       let level = this.stateLevel === 0 ? 3 : this.stateLevel === 1 ? 4 : 5;
-      console.log(level);
-      console.log(this.progress);
-      if (this.progress !== '') {
-        console.log('读取打乱');
-      // 读取进度打乱拼图
-        let data = this.progressData[this.progress]
+      // console.log(level);
+      // console.log(this.progress);
+      if (this.progress !== "") {
+        console.log("读取打乱");
+        // 读取进度打乱拼图
+        let data = this.progressData[this.progress];
         // 将返回的字符串以逗号分割转为数组
-        data.array = _.split(data.array,',')
+        data.array = _.split(data.array, ",");
         // 将字符串数组转为数字数组
-        data.array = data.array.map(Number)
+        data.array = data.array.map(Number);
         setTimeout(() => {
-          this.$store.commit('changePuzzle',data.array)
-        },1000)
+          this.$store.commit("changePuzzle", data.array);
+        }, 1000);
       } else {
         // 开始新的游戏, 打乱拼图
         console.log("获取后台传入的数组序列");
@@ -494,30 +559,32 @@ export default {
           console.log(res);
           if (res.data.code === 200) {
             // console.log(res.data.data);
-          this.$store.commit('changePuzzle',res.data.data)
+            this.$store.commit("changePuzzle", res.data.data);
           } else {
             //弹出提示框,请求有误,重新尝试
             console.log("请求有误");
           }
         });
       }
-      // this.$axios
-      //   .post(
-      //     "http://a.wpengsen.cn:8989/puzzle/generatedData",
-      //     qs.stringify({ num: level }),
-      //     {headers:{'Authorization': 'Bearer ' + this.$store.token,}}
-      //   )
-      //   .then((res) => {
-      //     console.log(res);
-      //     // 如果请求成功,执行点击方法,自动复原
-      //     if (res.status === 200) {
-      //       // console.log(res.data.data);
-      //       this.puzzles = res.data.data;
-      //     } else {
-      //       //弹出提示框,请求有误,重新尝试
-      //       console.log("请求有误");
-      //     }
-      //   });
+      setTimeout(() => {
+        autoPlay({ node: _.join(this.statePuzzle, ","), num: level }).then(
+          (res) => {
+            console.log(res);
+            // 如果请求成功,执行点击方法,自动复原
+            if (res.data.code === 200) {
+              let step = res.data.data.simpleProcess;
+              console.log(step);
+              this.tipStep =
+                this.stateLevel === 0
+                  ? Math.round((step.length * 1) / 5)
+                  : this.stateLevel === 1
+                  ? Math.round((step.length * 2) / 5)
+                  : Math.round((step.length * 3) / 5);
+              console.log(this.tipStep);
+            }
+          }
+        );
+      }, 1000);
     },
     // 动态设置cell高度
     setHeight() {
@@ -532,9 +599,9 @@ export default {
       // console.log('父组件',this.imgUrl);
       console.log(data);
       // console.log(this.stateImgUrl);
-      this.imgRender()
-       document.querySelector('#btnShuffle').classList.remove("v-btn--disabled");
-      document.querySelector('#btnSeeImg').classList.remove("v-btn--disabled");
+      this.imgRender();
+      document.querySelector("#btnShuffle").classList.remove("v-btn--disabled");
+      document.querySelector("#btnSeeImg").classList.remove("v-btn--disabled");
       // switch (this.cols) {
       //   case 4:
       //     this.imgRender(0);
@@ -558,7 +625,7 @@ export default {
       this.$nextTick(() => {
         let cells = document.querySelectorAll(".cell");
         let cellWidth = cells[0].offsetWidth;
-        // console.log(cells);
+        console.log(cells);
         let size = this.stateLevel === 0 ? 3 : this.stateLevel === 1 ? 4 : 5;
         // switch (this.cols) {
         //   case 4:
@@ -600,10 +667,10 @@ export default {
       this.setHeight();
       if (index === 0) {
         let puzzle = [1, 2, 3, 4, 5, 6, 7, 8, 0];
-        this.$store.commit('changePuzzle',puzzle)
+        this.$store.commit("changePuzzle", puzzle);
       } else if (index === 1) {
         let puzzle = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0];
-        this.$store.commit('changePuzzle',puzzle)
+        this.$store.commit("changePuzzle", puzzle);
       } else if (index === 2) {
         let puzzle = [
           1,
@@ -632,7 +699,7 @@ export default {
           24,
           0,
         ];
-        this.$store.commit('changePuzzle',puzzle)
+        this.$store.commit("changePuzzle", puzzle);
       }
       // 发现在通过其他方式设置拼图图片后, 一旦改变窗口大小,
       // this.getImgUrl(this.imgUrl)
@@ -641,6 +708,7 @@ export default {
     // 点击方块
     clickBlock(index) {
       // console.log(index);
+      
       let curIndex = this.statePuzzle[index];
       let leftIndex = this.statePuzzle[index - 1];
       let rightIndex = this.statePuzzle[index + 1];
@@ -710,6 +778,7 @@ export default {
         let cells = document.querySelectorAll(".cell");
         let btnAutoPlay = document.querySelector("#btnAutoPlay");
         let btnSave = document.querySelector("#btnSave");
+        let btnTip = document.querySelector("#btnTip");
         // console.log(cells);
         for (let i = 0; i < cells.length; i++) {
           let cell = cells[i];
@@ -724,6 +793,8 @@ export default {
         }
         btnAutoPlay.classList.add("v-btn--disabled");
         btnSave.classList.add("v-btn--disabled");
+        btnTip.classList.add("v-btn--disabled");
+        this.tipStep = 0;
       });
     },
     // 允许点击, 添加拼图时的样式
@@ -732,8 +803,10 @@ export default {
         let cells = document.querySelectorAll(".cell");
         let btnAutoPlay = document.querySelector("#btnAutoPlay");
         let btnSave = document.querySelector("#btnSave");
+        let btnTip = document.querySelector("#btnTip");
         btnAutoPlay.classList.remove("v-btn--disabled");
         btnSave.classList.remove("v-btn--disabled");
+        btnTip.classList.remove("v-btn--disabled");
         // console.log(cells);
         for (let i = 0; i < cells.length; i++) {
           let cell = cells[i];
@@ -758,7 +831,7 @@ export default {
         let score = this.stateLevel === 0 ? 2 : this.stateLevel === 1 ? 5 : 10;
         addScore({ grade: score, id: this.$store.state.id }).then((res) => {
           console.log(res);
-        this.$store.commit("changeScore", res.data.data);
+          this.$store.commit("changeScore", res.data.data);
         });
       }
     },
@@ -773,6 +846,8 @@ export default {
         console.log(_this.isAuto);
         _this.computeScore();
         _this.isAuto = !_this.isAuto;
+        
+        _this.overlayAuto = false
       }
       switch (this.stateLevel) {
         case 0:
@@ -829,7 +904,8 @@ export default {
     },
     // 设置游戏进度标题
     saveBefore() {
-      let level = this.stateLevel === 0 ? '3*3' : this.stateLevel === 1 ? '4*4' : '5*5'
+      let level =
+        this.stateLevel === 0 ? "3*3" : this.stateLevel === 1 ? "4*4" : "5*5";
       let date = new Date();
       let curTime = date.toLocaleDateString();
       this.saveTitle = level + "--" + curTime;
@@ -855,23 +931,19 @@ export default {
       // 保存当前数组值
       let sPuzzle = this.statePuzzle;
       // 保存当前拼图难度
-      let sLevel = this.stateLevel === 0 ? 3 : this.stateLevel === 1 ? 4 : 5
+      let sLevel = this.stateLevel === 0 ? 3 : this.stateLevel === 1 ? 4 : 5;
       let sUser = this.$store.state.id;
 
       let formData = new FormData();
       // 保存当前拼图图片
       let sImg;
       // if (this.stateImgUrl.indexOf("data:image") > -1) {}
-        // base64 图片操作
-        // 将图片转换为blob格式传给后台
-        // console.log(this.stateImgUrl);
-        sImg = this.convertBase64UrlToBlob(this.stateImgUrl);
-        formData.append(
-          "file",
-          sImg,
-          "file_" + Date.parse(new Date()) + ".jpeg"
-        );
-     
+      // base64 图片操作
+      // 将图片转换为blob格式传给后台
+      // console.log(this.stateImgUrl);
+      sImg = this.convertBase64UrlToBlob(this.stateImgUrl);
+      formData.append("file", sImg, "file_" + Date.parse(new Date()) + ".jpeg");
+
       formData.append("array", sPuzzle);
       formData.append("level", sLevel);
       formData.append("title", sTitle);
@@ -885,9 +957,9 @@ export default {
           if (res.data.code === 200) {
             console.log("保存成功");
             this.progressSnackbar = true;
-            this.progressSnackbarText = '已保存游戏进度 ' + this.saveTitle
+            this.progressSnackbarText = "已保存游戏进度 " + this.saveTitle;
           } else {
-            console.log('qingqiuchaoshi');
+            console.log("qingqiuchaoshi");
           }
         });
         // this.$axios
@@ -913,7 +985,7 @@ export default {
         }
       });
     },
-     // 将本地图片转为base64格式
+    // 将本地图片转为base64格式
     getBase64Image(img) {
       let canvas = document.createElement("canvas");
       canvas.width = img.width;
@@ -927,59 +999,87 @@ export default {
     chooseProgress() {
       console.log(this.progress);
       if (this.progress != null) {
-        let data = this.progressData[this.progress]
+        let data = this.progressData[this.progress];
         // // 将返回的字符串以逗号分割转为数组
         // data.array = _.split(data.array,',')
         // // 将字符串数组转为数字数组
         // data.array = data.array.map(Number)
-        let levelIndex = data.level === 3 ? 0 : data.level === 4 ? 1 : 2
-        
+        let levelIndex = data.level === 3 ? 0 : data.level === 4 ? 1 : 2;
+
         // 将拼图图片转base64保存至状态管理
-         let image = new Image();
-        image.src = data.imgUrl + '?v=' + Math.random() // 处理缓存;
-        image.crossOrigin = '*' // 支持跨域图片
+        let image = new Image();
+        image.src = data.imgUrl + "?v=" + Math.random(); // 处理缓存;
+        image.crossOrigin = "*"; // 支持跨域图片
         // image.onload为异步加载
         image.onload = () => {
-         let imgUrl = this.getBase64Image(image)
-      this.$store.commit('changeImgUrl',imgUrl)
-        // 读取进度等级
-        this.levelChoose(levelIndex)
-        // 打乱拼图
-        this.shuffle()
-        this.progress = ''
-        // 读取成功
-        this.progressSnackbar = true
-            this.progressSnackbarText = '已读取游戏进度 ' + data.title
-            this.canClick()
+          let imgUrl = this.getBase64Image(image);
+          this.$store.commit("changeImgUrl", imgUrl);
+          // 读取进度等级
+          this.levelChoose(levelIndex);
+          // 打乱拼图
+          this.shuffle();
+          this.progress = "";
+          // 读取成功
+          this.progressSnackbar = true;
+          this.progressSnackbarText = "已读取游戏进度 " + data.title;
+          this.canClick();
         };
       }
     },
     // 删除游戏进度
     delProgress() {
-      let data = this.progressData[this.progress]
+      let data = this.progressData[this.progress];
       console.log(data);
-      deletePro({id:data.id}).then(res => {
+      deletePro({ id: data.id }).then((res) => {
         console.log(res);
         if (res.data.code === 200) {
           // 删除成功, 更新页面
-          this.readProgress()
+          this.readProgress();
           // 提示
-          this.progressSnackbar = true
-            this.progressSnackbarText = '已删除游戏进度 '+data.title
-            this.progress = ''
+          this.progressSnackbar = true;
+          this.progressSnackbarText = "已删除游戏进度 " + data.title;
+          this.progress = "";
         }
-      })
-    }
+      });
+    },
+    // 提示功能
+    tips() {
+      // 每点击一次, 获取当前拼图的拼回数组, 执行点击方块功能, 参数为拼回数组[0],
+      //            tipStep -1, 当为 0 时, 按钮不可被点击
+      //            若拼图已完成, tipStep 置0, 按钮不可被点击
+      let _this = this
+      
+        let btnTip = document.querySelector("#btnTip");
+      let level = _this.stateLevel === 0 ? 3 : _this.stateLevel === 1 ? 4 : 5;
+      autoPlay({ node: _.join(_this.statePuzzle, ","), num: level }).then(
+        (res) => {
+          console.log(res);
+          // 如果请求成功,执行点击方法,自动复原
+          if (res.data.code === 200) {
+            let step = res.data.data.simpleProcess;
+            // console.log(step[0]);
+            setTimeout(() => {
+              _this.clickBlock(step[1]);
+            },100)
+          }
+        }
+      );
+      _this.tipStep--;
+      if (_this.tipStep === 0) {
+
+        btnTip.classList.add("v-btn--disabled");
+      }
+    },
   },
   mounted() {
     //默认显示3*3拼图
-  this.levelChoose(0)
+    this.levelChoose(0);
     // window.addEventListener('render',this.render(0))
     this.notClick(); //游戏开始前无法操作
-    if (this.stateImgUrl === '') {
+    if (this.stateImgUrl === "") {
       // btnShuffle
-      document.querySelector('#btnShuffle').classList.add("v-btn--disabled");
-      document.querySelector('#btnSeeImg').classList.add("v-btn--disabled");
+      document.querySelector("#btnShuffle").classList.add("v-btn--disabled");
+      document.querySelector("#btnSeeImg").classList.add("v-btn--disabled");
     }
     // 为实现拼图大动态小自适应页面,每当视口发生改变, 重新渲染一次拼图面板的高度, 重新渲染背景图片大小,重新打乱拼图
     // window.onresize = () => {
@@ -1016,7 +1116,7 @@ export default {
   box-shadow: 0px 0px 3px #333333;
   background-color: #f5f5f5;
   /* background-image: url('~assets/img/004.jpg'); */
-  text-indent: -9999px;
+  text-indent: -999px;
   text-shadow: 0 0 10px #000;
 }
 .cell-zero {
@@ -1031,5 +1131,8 @@ export default {
   flex: 0 0 20%;
   max-width: 20%;
   float: left;
+}
+.v-overlay__content {
+    height: calc(100vh);
 }
 </style>
