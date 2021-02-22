@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-28 16:17:42
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-21 15:19:13
+ * @LastEditTime: 2021-02-22 17:13:10
 -->
 <template>
   <div class="chooseImg">
@@ -238,7 +238,7 @@
          color="primary"
           v-bind="attrs"
           v-on="on"
-          class="d-flex d-sm-none"
+          class="d-flex d-sm-none  ma-auto"
         >
           选择图片
         </v-btn>

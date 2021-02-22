@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 19:53:02
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-20 14:13:22
+ * @LastEditTime: 2021-02-22 16:54:36
 -->
 <template>
   <div class="login">
@@ -30,7 +30,7 @@
         >
           {{ success ? "登录成功" : "登录失败,请重新尝试" }}
         </v-snackbar> -->
-       
+
         <v-card class="mx-auto pa-6 my-2" min-width="300" outlined>
           <!-- <div text class="text-center text-h4">LOGIN</div> -->
           <v-card-text class="ma-0 pa-0">
@@ -155,14 +155,15 @@
       </v-col>
     </v-row>
     <v-expand-x-transition>
-     <v-alert dense
-      v-model="alert"
-      absolutely
-      :type="success ? 'success' : 'error'"
-    >
-      {{ success ? "登录成功" : "登录失败,请重新尝试" }}
-    </v-alert>
-      </v-expand-x-transition>
+      <v-alert
+        dense
+        v-model="alert"
+        absolutely
+        :type="success ? 'success' : 'error'"
+      >
+        {{ success ? "登录成功" : "登录失败,请重新尝试" }}
+      </v-alert>
+    </v-expand-x-transition>
     <v-footer padless absolute>
       <v-col class="text-center" cols="12">
         Copyright © 2021 slimmerYu. All rights reserved.
@@ -172,117 +173,128 @@
 </template>
 
 <script>
-import {getCode,getLoginData} from "network/login"
+import { getCode, getLoginData } from "network/login";
 // import {getCode} from "network/login"
 // import axios from 'axios'
-import qs from 'qs'
+import qs from "qs";
 export default {
-  name: 'Login',
+  name: "Login",
 
-  components: {
-  },
-  data: () => ({ 
-    btnTitle:'获取验证码',
+  components: {},
+  data: () => ({
+    btnTitle: "获取验证码",
     // show: false,//密码显示或显示*
     valid: true,
-    success: false,//登录成功
-    alert: false,//控制登录提示框显示与隐藏
-    loading: false,//控制登录按钮的加载动画
+    success: false, //登录成功
+    alert: false, //控制登录提示框显示与隐藏
+    loading: false, //控制登录按钮的加载动画
     rules: {
-      required: value => !!value || 'Required.',
+      required: (value) => !!value || "Required.",
       moblie: (value) => {
         const pattern = /^[1]([3-9])[0-9]{9}$/;
-        return pattern.test(value) || 'Please input the correct mobile phone number'
+        return (
+          pattern.test(value) || "Please input the correct mobile phone number"
+        );
       },
-      checkbox: v => !!v || 'You must agree to continue!'
+      checkbox: (v) => !!v || "You must agree to continue!",
     },
-    PhoneNumber: '',
-    PhoneCode: null, 
+    PhoneNumber: "",
+    PhoneCode: null,
     checkbox: false,
     terms: false,
     conditions: false,
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc.',
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc.",
   }),
   methods: {
-    validateBtn(){
-   //倒计时
-    let time = 60;
-    let timer = setInterval(() => {
-    if(time == 0) {
-      clearInterval(timer);
+    validateBtn() {
+      //倒计时
+      let time = 60;
+      let timer = setInterval(() => {
+        if (time == 0) {
+          clearInterval(timer);
 
-      document.querySelector('#btnCode').classList.remove("v-btn--disabled");
-      this.btnTitle = "获取验证码";
-    } else {
-      this.btnTitle =time + '秒后重试';
-      document.querySelector('#btnCode').classList.add("v-btn--disabled");
-      time--
-    }
-    },1000)
-    // 跳转页面清除计时器, 否则会一直执行报错
-    this.$once('hook:beforeDestroy', () => {            
-          clearInterval(timer);     
-           })
-           
-  },
+          document
+            .querySelector("#btnCode")
+            .classList.remove("v-btn--disabled");
+          this.btnTitle = "获取验证码";
+        } else {
+          this.btnTitle = time + "秒后重试";
+          document.querySelector("#btnCode").classList.add("v-btn--disabled");
+          time--;
+        }
+      }, 1000);
+      // 跳转页面清除计时器, 否则会一直执行报错
+      this.$once("hook:beforeDestroy", () => {
+        clearInterval(timer);
+      });
+    },
     // 获取验证码
     getCode() {
       // console.log(this.$refs.PhoneNumber.valid);
-      if(this.$refs.PhoneNumber.valid) {
+      if (this.$refs.PhoneNumber.valid) {
         // 手机号码格式正确, 发送请求
-        this.validateBtn()
+        this.validateBtn();
         // 请求验证码
         // http://a.wpengsen.cn:8989
-        getCode({phone:this.PhoneNumber}).then(res => {
+        getCode({ phone: this.PhoneNumber }).then((res) => {
           console.log(res);
-          if(res.data.code === 200) {
-            console.log('请求成功');
-            
+          if (res.data.code === 200) {
+            console.log("请求成功");
           }
-        })
+        });
         // this.$axios.post('http://a.wpengsen.cn:8989/sendMsg',qs.stringify({phone:this.PhoneNumber})).then(res => {
         //   // console.log(res);
         //   if(res.data.code === 200) {
         //     console.log('请求成功');
-            
+
         //   }
         // })
       }
     },
     login() {
-      if(this.$refs.form.validate()){//将验证所有输入并返回它们是否都有效
+      if (this.$refs.form.validate()) {
+        //将验证所有输入并返回它们是否都有效
         // console.log('手机号: ',typeof this.PhoneNumber,'验证码: ',typeof parseInt(this.PhoneCode) );
-              // 用于登录按钮加载动画
-              this.loading = true
+        // 用于登录按钮加载动画
+        this.loading = true;
         // console.log(this.user.tel,this.user.pwd);
-console.log(qs.stringify({code:parseInt(this.PhoneCode),phone:this.PhoneNumber}));
-        getLoginData({code:parseInt(this.PhoneCode),phone:this.PhoneNumber}).then(res => {
+        console.log(
+          qs.stringify({
+            code: parseInt(this.PhoneCode),
+            phone: this.PhoneNumber,
+          })
+        );
+        getLoginData({
+          code: parseInt(this.PhoneCode),
+          phone: this.PhoneNumber,
+        }).then((res) => {
           console.log(res);
-           if (res.data.code === 200) {
-              console.log(res.data);
-              // 用于判断提示框
-                this.success = true
-                this.alert = !this.alert
-              // 跳转页面
-              setTimeout(() => {
-                this.$router.push({path: "/"})
-                this.alert = !this.alert
-              }, 1500);
-              
-                // 保存token到sessionStorage
-                // sessionStorage.setItem('token',res.data.data.token)
-            this.$store.commit("set_user", res.data.data)
-            }else {
-              this.success = false
-                this.alert = !this.alert
-              console.log(res.data.message);
-                setTimeout(() => {
-                this.alert = !this.alert
-              }, 2000);
-              this.loading = false
-            }
-        })
-        
+          if (res.data.code === 200) {
+            console.log(res.data);
+            // 用于判断提示框
+            this.success = true;
+            this.alert = !this.alert;
+            // 跳转页面
+            setTimeout(() => {
+              this.$router.push({ path: "/" });
+              this.alert = !this.alert;
+            }, 1500);
+
+            // 保存token到sessionStorage
+            // sessionStorage.setItem('token',res.data.data.token)
+            this.$store.commit("set_user", res.data.data);
+          } else {
+            this.success = false;
+            this.alert = !this.alert;
+            console.log(res.data.message);
+            setTimeout(() => {
+              this.alert = !this.alert;
+            }, 2000);
+            this.loading = false;
+          }
+        });
+
         // this.$axios.post('http://a.wpengsen.cn:8989/login',qs.stringify({code:parseInt(this.PhoneCode),phone:this.PhoneNumber}))
         // .then(res=>{
         //     // console.log(res)
@@ -296,7 +308,7 @@ console.log(qs.stringify({code:parseInt(this.PhoneCode),phone:this.PhoneNumber})
         //         this.$router.push({path: "/"})
         //         this.alert = !this.alert
         //       }, 1500);
-              
+
         //         // 保存token到sessionStorage
         //         // sessionStorage.setItem('token',res.data.data.token)
         //     this.$store.commit("set_user", res.data.data)
@@ -312,7 +324,7 @@ console.log(qs.stringify({code:parseInt(this.PhoneCode),phone:this.PhoneNumber})
         //     }
         // })
       }
-    }
+    },
   },
 };
 </script>

@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-02-15 14:19:16
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-19 21:22:10
+ * @LastEditTime: 2021-02-22 16:49:22
 -->
 <template>
   <div class="check-avatar">
@@ -45,7 +45,7 @@
             </v-col>
             <v-col cols="4" class="text-center">
               <v-btn @click="rotateImage()">
-                <v-icon dark> mdi-rotate </v-icon>
+                <v-icon dark> mdi-rotate-right </v-icon>
               </v-btn>
             </v-col>
             <v-col cols="4" class="text-center">
