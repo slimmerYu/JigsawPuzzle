@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 19:53:02
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-22 20:05:40
+ * @LastEditTime: 2021-02-23 12:20:52
 -->
 <template>
   <div class="home">
@@ -29,11 +29,10 @@
           <!-- 拼图面板 -->
           <v-container class="pa-0">
             <v-row no-gutters class="puzzle mx-auto">
-
               <v-col
                 :cols="stateLevel === 0 ? 4 : stateLevel === 1 ? 3 : 0"
                 @click.prevent="clickBlock(index)"
-                :index=index
+                :data-index="index"
                 v-for="(puzzle, index) in statePuzzle"
                 :key="puzzle"
                 v-text="puzzle"
@@ -96,7 +95,7 @@
                 <v-bottom-sheet v-model="sheet">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                      class="d-flex d-sm-none  ma-auto"
+                      class="d-flex d-sm-none ma-auto"
                       color="primary"
                       elevation="1"
                       outlined
@@ -202,7 +201,7 @@
                   </template>
                   <template v-slot:default="dialog">
                     <v-card>
-                       <v-card-title class="title"> 保存进度 </v-card-title>
+                      <v-card-title class="title"> 保存进度 </v-card-title>
                       <v-card-text>
                         <v-container>
                           <v-row>
@@ -244,11 +243,7 @@
               </v-col>
               <!-- 读取进度 -->
               <v-col md="12" cols="4" text class="text-center mb-4">
-                <v-dialog
-                  max-width="600"
-                  scrollable
-      persistent
-                >
+                <v-dialog max-width="600" scrollable persistent>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
                       elevation="1"
@@ -262,9 +257,25 @@
                   </template>
                   <template v-slot:default="dialog">
                     <v-card>
-                       <v-card-title class="title"> 选择游戏进度 </v-card-title>
+                      <v-card-title class="title"> 选择游戏进度 </v-card-title>
                       <v-divider></v-divider>
                       <v-card-text style="height: 350px" class="">
+                        <div
+                          v-show="isShow"
+                          style="
+                            position: absolute;
+                            left: 50%;
+                            top: 50%;
+                            transform: translate(-50%, -50%);
+                          "
+                        >
+                          <v-progress-circular
+                            :size="100"
+                            :width="10"
+                            indeterminate
+                            color="#f3e5f5"
+                          ></v-progress-circular>
+                        </div>
                         <v-radio-group v-model="progress" column>
                           <v-radio
                             v-for="(radio, index) in progressData"
@@ -299,9 +310,16 @@
                           "
                           >选择</v-btn
                         >
-                        
+
                         <v-spacer></v-spacer>
-                        <v-btn text @click="dialog.value = false;progress = ''">关闭</v-btn>
+                        <v-btn
+                          text
+                          @click="
+                            dialog.value = false;
+                            progress = '';
+                          "
+                          >关闭</v-btn
+                        >
                       </v-card-actions>
                     </v-card>
                   </template>
@@ -325,16 +343,18 @@
                   </v-btn>
                 </template>
               </v-snackbar>
-              <v-overlay
-          :value="overlayAuto"
-          opacity="0.4"
-          absolute
-        >
-        <v-row class="text-center text-h5" style="bottom:18%;position:absolute;left:52%;transform:translateX(-50%)">
-          <v-col cols="12">
-            剩余  {{autoStep}}  步
-          </v-col>
-          <!-- <v-col cols="12">
+              <v-overlay :value="overlayAuto" opacity="0.4" absolute>
+                <v-row
+                  class="text-center text-h5"
+                  style="
+                    bottom: 18%;
+                    position: absolute;
+                    left: 52%;
+                    transform: translateX(-50%);
+                  "
+                >
+                  <v-col cols="12"> 剩余 {{ autoStep }} 步 </v-col>
+                  <!-- <v-col cols="12">
             
           <v-btn
           large
@@ -345,15 +365,18 @@
             停止自动拼图
           </v-btn>
           </v-col> -->
-        </v-row>
-        </v-overlay>
+                </v-row>
+              </v-overlay>
             </v-row>
           </v-container>
         </v-col>
       </v-row>
     </v-container>
-    <v-row class="ma-0 text-right" style="bottom:2%;position:absolute;right:8%;">
-      <Help/>
+    <v-row
+      class="ma-0 text-right"
+      style="bottom: 2%; position: absolute; right: 8%"
+    >
+      <Help />
     </v-row>
   </div>
 </template>
@@ -378,7 +401,7 @@ export default {
   name: "Home",
   components: {
     ChooseImg,
-    Help
+    Help,
   },
   data: () => ({
     // puzzles: [],
@@ -404,8 +427,9 @@ export default {
     progressSnackbar: false, //进度消息条
     progressSnackbarText: "", //进度消息条内容
     tipStep: 0, //提示按钮右上角徽章数据展示剩余提示步骤
-    overlayAuto: false,//自动拼图时的遮罩层, 用于提示用户剩余步数, 防止用户执行其他操作, 可终止自动拼图
-    autoStep: 0,//自动拼图步数
+    overlayAuto: false, //自动拼图时的遮罩层, 用于提示用户剩余步数, 防止用户执行其他操作, 可终止自动拼图
+    autoStep: 0, //自动拼图步数
+    isShow: false,
   }),
   computed: {
     stateImgUrl() {
@@ -476,7 +500,7 @@ export default {
       let level = this.stateLevel === 0 ? 3 : this.stateLevel === 1 ? 4 : 5;
       console.log("获取后台步骤数据");
       const _this = this;
-      
+
       autoPlay({ node: _.join(this.statePuzzle, ","), num: level }).then(
         (res) => {
           console.log(res);
@@ -484,17 +508,17 @@ export default {
           if (res.data.code === 200) {
             //通过步骤,for循环调用点击方法
             let step = res.data.data.simpleProcess;
-            _this.autoStep = step.length - 1
-            _this.tipStep = 0
-            document.querySelector('#btnTip').classList.add("v-btn--disabled");
-            _this.overlayAuto = true
+            _this.autoStep = step.length - 1;
+            _this.tipStep = 0;
+            document.querySelector("#btnTip").classList.add("v-btn--disabled");
+            _this.overlayAuto = true;
             for (let i = 1; i < step.length; i++) {
               (function () {
                 //将延时器整个的包裹在一个子执行函数中
                 setTimeout(() => {
                   console.log(step[i]);
                   _this.clickBlock(step[i]);
-                  _this.autoStep --
+                  _this.autoStep--;
                 }, i * 500); //想要每隔0.5秒调用一次，而不是同时调用，要将参数传进时间中
               })(i); //把每个循环中的 i 在被回收之前直接传入到自执行函数中，这样就可以避免被回收
             }
@@ -502,11 +526,9 @@ export default {
             //弹出提示框,请求有误,重新尝试
             console.log("请求有误");
           }
-          
-            
         }
       );
-     
+
       // this.$axios
       //   .post(
       //     "http://a.wpengsen.cn:8989/puzzle/automaticCalculation",
@@ -625,21 +647,8 @@ export default {
       this.$nextTick(() => {
         let cells = document.querySelectorAll(".cell");
         let cellWidth = cells[0].offsetWidth;
-        console.log(cells);
+        // console.log(cells);
         let size = this.stateLevel === 0 ? 3 : this.stateLevel === 1 ? 4 : 5;
-        // switch (this.cols) {
-        //   case 4:
-        //     size = 3;
-        //     break;
-        //   case 3:
-        //     size = 4;
-        //     break;
-        //   case 0:
-        //     size = 5;
-        //     break;
-        //   default:
-        //     break;
-        // }
         let cellsArr = _.chunk(cells, size);
 
         // console.log(cellsArr.length);
@@ -707,25 +716,29 @@ export default {
     },
     // 点击方块
     clickBlock(index) {
-      // console.log(index);
-      
+      console.log(index);
       let curIndex = this.statePuzzle[index];
       let leftIndex = this.statePuzzle[index - 1];
       let rightIndex = this.statePuzzle[index + 1];
       let topIndex = this.statePuzzle[index - 3];
       let bottomIndex = this.statePuzzle[index + 3];
+      // console.log(curIndex,leftIndex,rightIndex,topIndex,bottomIndex);
       switch (this.stateLevel) {
         case 0:
           if (leftIndex == 0 && index % 3) {
+            this.blockAnimation(index, index - 1);
             this.$set(this.statePuzzle, index - 1, curIndex);
             this.$set(this.statePuzzle, index, 0);
           } else if (rightIndex == 0 && 2 !== index % 3) {
+            this.blockAnimation(index, index + 1);
             this.$set(this.statePuzzle, index + 1, curIndex);
             this.$set(this.statePuzzle, index, 0);
           } else if (topIndex == 0) {
+            this.blockAnimation(index, index - 3);
             this.$set(this.statePuzzle, index - 3, curIndex);
             this.$set(this.statePuzzle, index, 0);
           } else if (bottomIndex == 0) {
+            this.blockAnimation(index, index + 3);
             this.$set(this.statePuzzle, index + 3, curIndex);
             this.$set(this.statePuzzle, index, 0);
           }
@@ -734,15 +747,19 @@ export default {
           topIndex = this.statePuzzle[index - 4];
           bottomIndex = this.statePuzzle[index + 4];
           if (leftIndex == 0 && index % 4) {
+            this.blockAnimation(index, index - 1);
             this.$set(this.statePuzzle, index - 1, curIndex);
             this.$set(this.statePuzzle, index, 0);
           } else if (rightIndex == 0 && 3 !== index % 4) {
+            this.blockAnimation(index, index + 1);
             this.$set(this.statePuzzle, index + 1, curIndex);
             this.$set(this.statePuzzle, index, 0);
           } else if (topIndex == 0) {
+            this.blockAnimation(index, index - 4);
             this.$set(this.statePuzzle, index - 4, curIndex);
             this.$set(this.statePuzzle, index, 0);
           } else if (bottomIndex == 0) {
+            this.blockAnimation(index, index + 4);
             this.$set(this.statePuzzle, index + 4, curIndex);
             this.$set(this.statePuzzle, index, 0);
           }
@@ -752,15 +769,19 @@ export default {
           topIndex = this.statePuzzle[index - 5];
           bottomIndex = this.statePuzzle[index + 5];
           if (leftIndex == 0 && index % 5) {
+            this.blockAnimation(index, index - 1);
             this.$set(this.statePuzzle, index - 1, curIndex);
             this.$set(this.statePuzzle, index, 0);
           } else if (rightIndex == 0 && 4 !== index % 5) {
+            this.blockAnimation(index, index + 1);
             this.$set(this.statePuzzle, index + 1, curIndex);
             this.$set(this.statePuzzle, index, 0);
           } else if (topIndex == 0) {
+            this.blockAnimation(index, index - 5);
             this.$set(this.statePuzzle, index - 5, curIndex);
             this.$set(this.statePuzzle, index, 0);
           } else if (bottomIndex == 0) {
+            this.blockAnimation(index, index + 5);
             this.$set(this.statePuzzle, index + 5, curIndex);
             this.$set(this.statePuzzle, index, 0);
           }
@@ -771,6 +792,37 @@ export default {
       }
 
       this.pass();
+    },
+    // 为方块添加动画
+    blockAnimation(curIndex, changeIndex) {
+      let blankCell = document.querySelector('[data-index="' + curIndex + '"]');
+      let becomeblankCell = document.querySelector(
+        '[data-index="' + changeIndex + '"]'
+      );
+      // let start = blankCell.style.backgroundPosition
+      // let end = becomeblankCell.style.backgroundPosition
+      // document.documentElement.style.setProperty('--start-pos', start)
+      // document.documentElement.style.setProperty('--end-pos', end)
+      // console.log(start,end);
+      //       var childPos = obj.offset();
+      // var parentPos = obj.parent().offset();
+      // var childOffset = {
+      //     top: childPos.top - parentPos.top,
+      //     left: childPos.left - parentPos.left
+      // }
+      // let offsetTop = blankCell.offsetTop
+      // let offsetLeft = blankCell.offsetLeft
+      // let changeOffsetTop = becomeblankCell.offsetTop
+      // let changeOffsetLeft = becomeblankCell.offsetLeft
+      // console.log(offsetTop,offsetLeft);
+      // console.log(changeOffsetTop,changeOffsetLeft);
+      blankCell.classList.add("cell-animation");
+      becomeblankCell.classList.add("cell-animation");
+      // let shiftX = changeOffsetLeft - offsetLeft
+      // let shiftY = changeOffsetTop - offsetTop
+      // document.documentElement.style.setProperty('--shift-X', shiftX)
+      // document.documentElement.style.setProperty('--shift-Y', shiftY)
+      // console.log(blankCell, becomeblankCell);
     },
     // 禁止点击, 取消拼图时的样式
     notClick() {
@@ -846,8 +898,8 @@ export default {
         console.log(_this.isAuto);
         _this.computeScore();
         _this.isAuto = !_this.isAuto;
-        
-        _this.overlayAuto = false
+
+        _this.overlayAuto = false;
       }
       switch (this.stateLevel) {
         case 0:
@@ -977,11 +1029,19 @@ export default {
       // 向服务器发送请求, 通过用户ID获取已保存的进度
       // 点击按钮弹出对话框, 显示已保存的游戏进度
       // 选择已保存的进度, 获取数组值并赋给puzzles, 调用打乱函数
+      // 加载等待动画
+      console.log(this.progressData);
+      if (this.progressData.length === 0) {
+        this.isShow = true;
+      }
       getProgress({ userId: this.$store.state.id }).then((res) => {
         // console.log(res);
         if (res.data.code === 200) {
-          this.progressData = res.data.data;
-          console.log(this.progressData);
+          setTimeout(() => {
+            this.progressData = res.data.data;
+            // console.log(this.progressData);
+            this.isShow = false;
+          }, 300);
         }
       });
     },
@@ -997,7 +1057,7 @@ export default {
     },
     // 选择游戏进度
     chooseProgress() {
-      console.log(this.progress);
+      // console.log(this.progress);
       if (this.progress != null) {
         let data = this.progressData[this.progress];
         // // 将返回的字符串以逗号分割转为数组
@@ -1047,9 +1107,9 @@ export default {
       // 每点击一次, 获取当前拼图的拼回数组, 执行点击方块功能, 参数为拼回数组[0],
       //            tipStep -1, 当为 0 时, 按钮不可被点击
       //            若拼图已完成, tipStep 置0, 按钮不可被点击
-      let _this = this
-      
-        let btnTip = document.querySelector("#btnTip");
+      let _this = this;
+
+      let btnTip = document.querySelector("#btnTip");
       let level = _this.stateLevel === 0 ? 3 : _this.stateLevel === 1 ? 4 : 5;
       autoPlay({ node: _.join(_this.statePuzzle, ","), num: level }).then(
         (res) => {
@@ -1060,13 +1120,12 @@ export default {
             // console.log(step[0]);
             setTimeout(() => {
               _this.clickBlock(step[1]);
-            },100)
+            }, 100);
           }
         }
       );
       _this.tipStep--;
       if (_this.tipStep === 0) {
-
         btnTip.classList.add("v-btn--disabled");
       }
     },
@@ -1118,6 +1177,7 @@ export default {
   /* background-image: url('~assets/img/004.jpg'); */
   text-indent: -999px;
   text-shadow: 0 0 10px #000;
+  transition: opacity 1.6s;
 }
 .cell-zero {
   background-color: #fff;
@@ -1133,6 +1193,28 @@ export default {
   float: left;
 }
 .v-overlay__content {
-    height: calc(100vh);
+  height: calc(100vh);
+}
+:root {
+  --shift-X: "";
+  --shift-Y: "";
+}
+@keyframes cellTransCur {
+  0% {
+    /* background-position:0px,0px; */
+    /* background-position: var(--start-pos); */
+    opacity: 0;
+  }
+  100% {
+    /* background-position: -200px -200px; */
+
+    /* background-position: var(--end-pos); */
+    opacity: 1;
+    /* transform: translate(calc(var(--shift-X) * 1px),calc(var(--shift-Y) * 1px)); */
+    /* transform: translate(25px,25px); */
+  }
+}
+.cell-animation {
+  animation: cellTransCur 1.6s -0.1s;
 }
 </style>
