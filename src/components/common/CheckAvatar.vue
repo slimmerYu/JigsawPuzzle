@@ -4,11 +4,11 @@
  * @Author: slimmerYu
  * @Date: 2021-02-15 14:19:16
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-23 21:44:30
+ * @LastEditTime: 2021-02-23 21:52:51
 -->
 <template>
   <div class="check-avatar">
-    <v-dialog
+   gi <v-dialog
       v-model="dialog"
       fullscreen
       hide-overlay
