@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-02-15 14:19:16
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-22 16:49:22
+ * @LastEditTime: 2021-02-23 21:44:30
 -->
 <template>
   <div class="check-avatar">
