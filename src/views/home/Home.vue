@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 19:53:02
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-23 16:25:07
+ * @LastEditTime: 2021-02-23 21:41:17
 -->
 <template>
   <div class="home">
@@ -496,7 +496,7 @@ export default {
     },
     // 自己拼图
     autoPlay() {
-      this.isAuto = !this.isAuto;
+      this.isAuto = true
       let level = this.stateLevel === 0 ? 3 : this.stateLevel === 1 ? 4 : 5;
       console.log("获取后台步骤数据");
       const _this = this;
@@ -885,6 +885,7 @@ export default {
           console.log(res);
           this.$store.commit("changeScore", res.data.data);
         });
+        
       }
     },
     // 是否通过
@@ -897,8 +898,8 @@ export default {
 
         console.log(_this.isAuto);
         _this.computeScore();
-        _this.isAuto = !_this.isAuto;
-
+        
+        _this.isAuto = false
         _this.overlayAuto = false;
       }
       switch (this.stateLevel) {
