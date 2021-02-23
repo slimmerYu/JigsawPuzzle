@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 19:53:02
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-23 12:20:52
+ * @LastEditTime: 2021-02-23 16:25:07
 -->
 <template>
   <div class="home">
@@ -1118,9 +1118,7 @@ export default {
           if (res.data.code === 200) {
             let step = res.data.data.simpleProcess;
             // console.log(step[0]);
-            setTimeout(() => {
               _this.clickBlock(step[1]);
-            }, 100);
           }
         }
       );
