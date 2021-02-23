@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-28 16:17:42
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-22 17:13:10
+ * @LastEditTime: 2021-02-23 16:24:30
 -->
 <template>
   <div class="chooseImg">
@@ -88,18 +88,18 @@
     >
       <v-row
         align="center"
-        style="position: absolute; z-index: 999; width: 100%; bottom:15px"
+        style="position: absolute; z-index: 999; width: 100%; bottom: 15px"
         class="ma-0 pt-4"
       >
         <v-col cols="4">
           <v-btn icon @click="fileModal = false">
-            <v-icon > mdi-close </v-icon>
+            <v-icon> mdi-close </v-icon>
           </v-btn>
         </v-col>
         <v-col cols="4"></v-col>
         <v-col cols="4">
           <v-btn @click="submitPhoto()">
-            <v-icon dark > mdi-check </v-icon>
+            <v-icon dark> mdi-check </v-icon>
           </v-btn>
         </v-col>
       </v-row>
@@ -108,32 +108,39 @@
           <vueCropper
             ref="cropper"
             :img="option.img"
-          :outputSize="option.outputSize"
-          :outputType="option.outputType"
-          :info="option.info"
-          :full="option.full"
-          :autoCropWidth="option.autoCropWidth"
-          :autoCropHeight="option.autoCropHeight"
-          :canMove="option.canMove"
-          :canMoveBox="option.canMoveBox"
-          :original="option.original"
-          :autoCrop="option.autoCrop"
-          :fixed="option.fixed"
-          :fixedNumber="option.fixedNumber"
-          :centerBox="option.centerBox"
-          :infoTrue="option.infoTrue"
-          :fixedBox="option.fixedBox"
-          :high="option.high"
-          :mode="option.mode"
+            :outputSize="option.outputSize"
+            :outputType="option.outputType"
+            :info="option.info"
+            :full="option.full"
+            :autoCropWidth="option.autoCropWidth"
+            :autoCropHeight="option.autoCropHeight"
+            :canMove="option.canMove"
+            :canMoveBox="option.canMoveBox"
+            :original="option.original"
+            :autoCrop="option.autoCrop"
+            :fixed="option.fixed"
+            :fixedNumber="option.fixedNumber"
+            :centerBox="option.centerBox"
+            :infoTrue="option.infoTrue"
+            :fixedBox="option.fixedBox"
+            :high="option.high"
+            :mode="option.mode"
           ></vueCropper>
         </v-col>
       </v-row>
     </v-overlay>
-<!-- PC端 -->
+    <!-- PC端 -->
     <!-- 选择图片 -->
     <v-dialog transition="dialog-top-transition" max-width="600">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn style="margin:auto" class="d-none d-sm-flex" elevation="1" outlined color="primary" v-bind="attrs" v-on="on"
+        <v-btn
+          style="margin: auto"
+          class="d-none d-sm-flex"
+          elevation="1"
+          outlined
+          color="primary"
+          v-bind="attrs"
+          v-on="on"
           >选择图片</v-btn
         >
       </template>
@@ -155,33 +162,6 @@
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>拍照</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <!-- 拍照2 -->
-              <v-list-item
-                class="d-flex d-sm-none"
-                @click="
-                  openFile();
-                  dialog.value = false;
-                "
-              >
-                <v-list-item-icon>
-                  <v-icon>mdi-camera</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title
-                    >拍照
-                    <input
-                      type="file"
-                      hidden
-                      name="file"
-                      @change="fileChange"
-                      accept="image/*"
-                      ref="cameraFile"
-                      capture="camera"
-                      style="display: none"
-                    />
-                  </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
               <!-- 相册 -->
@@ -233,86 +213,86 @@
     <v-bottom-sheet v-model="sheet">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
-         elevation="1" 
-         outlined 
-         color="primary"
+          elevation="1"
+          outlined
+          color="primary"
           v-bind="attrs"
           v-on="on"
-          class="d-flex d-sm-none  ma-auto"
+          class="d-flex d-sm-none ma-auto"
         >
           选择图片
         </v-btn>
       </template>
       <v-list>
         <v-subheader>
-          <p >选择图片</p> 
+          <p>选择图片</p>
         </v-subheader>
-              <!-- 拍照2 -->
-              <v-list-item
-                class="d-flex d-sm-none "
-                @click="
-                  openFile();
-                  sheet = false;
-                "
-              >
-                <v-list-item-icon>
-                  <v-icon>mdi-camera</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title
-                    >拍照
-                    <input
-                      type="file"
-                      hidden
-                      name="file"
-                      @change="fileChange"
-                      accept="image/*"
-                      ref="cameraFile"
-                      capture="camera"
-                      style="display: none"
-                    />
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-divider></v-divider>
-              <!-- 相册 -->
-              <v-list-item
-                @click="
-                  albumImg();
-                  sheet = false;
-                "
-              >
-                <v-list-item-icon>
-                  <v-icon>mdi-image</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title
-                    >相册
-                    <input
-                      type="file"
-                      hidden
-                      ref="photoFile"
-                      accept="image/*"
-                      @change="fileChange"
-                      style="display: none"
-                    />
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-divider></v-divider>
-              <v-list-item
-                @click="
-                  defaultImg();
-                  sheet = false;
-                "
-              >
-                <v-list-item-icon>
-                  <v-icon>mdi-cursor-default</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>默认图片</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
+        <!-- 拍照2 -->
+        <v-list-item
+          class="d-flex d-sm-none"
+          @click="
+            openFile();
+            sheet = false;
+          "
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-camera</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title
+              >拍照
+              <input
+                type="file"
+                hidden
+                name="file"
+                @change="fileChange"
+                accept="image/*"
+                ref="cameraFile"
+                capture="camera"
+                style="display: none"
+              />
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider></v-divider>
+        <!-- 相册 -->
+        <v-list-item
+          @click="
+            albumImg();
+            sheet = false;
+          "
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-image</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title
+              >相册
+              <input
+                type="file"
+                hidden
+                ref="photoFile"
+                accept="image/*"
+                @change="fileChange"
+                style="display: none"
+              />
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider></v-divider>
+        <v-list-item
+          @click="
+            defaultImg();
+            sheet = false;
+          "
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-cursor-default</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>默认图片</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-bottom-sheet>
   </div>
@@ -323,7 +303,7 @@ import { VueCropper } from "vue-cropper";
 export default {
   name: "ChooseImg",
   components: {
-    VueCropper
+    VueCropper,
   },
   data: () => {
     return {
@@ -332,31 +312,31 @@ export default {
       fileModal: false, //控制相册选择图片后图片展示遮罩层的显示与隐藏
       isShow: false, //控制拍照页[video, canvas, 确认, 重新拍照]的显示与隐藏
       // 裁剪组件的基础配置option
-				option: {
-				img: "",
-      outputSize: 0.8,
-      info: false, // 裁剪框的大小信息
-      outputType: "jpeg", // 裁剪生成图片的格式
-      canScale: false, // 图片是否允许滚轮缩放
-      autoCrop: true, // 是否默认生成截图框
-      autoCropWidth: window.innerWidth - 100 + "px", // 默认生成截图框宽度
-      autoCropHeight: window.innerWidth - 100 + "px", // 默认生成截图框高度
-      high: true, // 是否按照设备的dpr 输出等比例图片
-      fixedBox: true, // 固定截图框大小 不允许改变
-      fixed: true, // 是否开启截图框宽高固定比例
-      fixedNumber: [1, 1], // 截图框的宽高比例
-      full: true, // 是否输出原图比例的截图
-      canMoveBox: false, // 截图框能否拖动
-      original: false, // 上传图片按照原始比例渲染
-      centerBox: false, // 截图框是否被限制在图片里面
-      infoTrue: false, // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
-      mode: "100% auto", // 图片默认渲染方式
-				},
-        sheet: false,//控制底部工作表
+      option: {
+        img: "",
+        outputSize: 0.8,
+        info: false, // 裁剪框的大小信息
+        outputType: "jpeg", // 裁剪生成图片的格式
+        canScale: false, // 图片是否允许滚轮缩放
+        autoCrop: true, // 是否默认生成截图框
+        autoCropWidth: window.innerWidth - 100 + "px", // 默认生成截图框宽度
+        autoCropHeight: window.innerWidth - 100 + "px", // 默认生成截图框高度
+        high: true, // 是否按照设备的dpr 输出等比例图片
+        fixedBox: true, // 固定截图框大小 不允许改变
+        fixed: true, // 是否开启截图框宽高固定比例
+        fixedNumber: [1, 1], // 截图框的宽高比例
+        full: true, // 是否输出原图比例的截图
+        canMoveBox: false, // 截图框能否拖动
+        original: false, // 上传图片按照原始比例渲染
+        centerBox: false, // 截图框是否被限制在图片里面
+        infoTrue: false, // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
+        mode: "100% auto", // 图片默认渲染方式
+      },
+      sheet: false, //控制底部工作表
     };
   },
   methods: {
-     // 将本地图片转为base64格式
+    // 将本地图片转为base64格式
     getBase64Image(img) {
       let canvas = document.createElement("canvas");
       canvas.width = img.width;
@@ -368,20 +348,19 @@ export default {
     },
     // 默认图片
     defaultImg() {
-      let imgUrl = require("../../../assets/img/imgPuzzle.png")
-      
+      let imgUrl = require("../../../assets/img/imgPuzzle.png");
+
       // console.log(imgUrl);
       // this.$emit("imgUrl", this.imgUrl);
-       // 一定要设置为let，不然图片不显示
-        let image = new Image();
-        image.src = imgUrl;
-        // image.onload为异步加载
-        image.onload = () => {
-          imgUrl = this.getBase64Image(image)
-      this.$store.commit('changeImgUrl',imgUrl)
+      // 一定要设置为let，不然图片不显示
+      let image = new Image();
+      image.src = imgUrl;
+      // image.onload为异步加载
+      image.onload = () => {
+        imgUrl = this.getBase64Image(image);
+        this.$store.commit("changeImgUrl", imgUrl);
         this.$emit("imgUrl", "success");
-        };
-      
+      };
     },
     // PC打开相机
     cameraImg() {
@@ -457,9 +436,9 @@ export default {
       console.log(dataURL);
       this.imgUrl = dataURL;
       // this.$emit("imgUrl", this.imgUrl);
-      this.$store.commit('changeImgUrl',dataURL)
+      this.$store.commit("changeImgUrl", dataURL);
 
-        this.$emit("imgUrl", "success");
+      this.$emit("imgUrl", "success");
       this.closeVideo();
     },
     // 关闭摄像头
@@ -467,77 +446,77 @@ export default {
       this.MediaStreamTrack && this.MediaStreamTrack.stop();
     },
     // 打开Android相机
-    openFile(){
-        this.isCamera = true
-        this.$refs.cameraFile.click();
+    openFile() {
+      this.isCamera = true;
+      this.$refs.cameraFile.click();
     },
-    
+
     // 打开相册
     albumImg() {
-      // document.querySelector("#imgReader").click();
-            this.$refs.photoFile.click();
-            // console.log(this.$refs.photoFile);
-      // this.fileModal = true;
+      this.$refs.photoFile.click();
     },
     pcAlbumImg() {
-      // document.querySelector("#imgReader").click();
-            this.$refs.pcPhotoFile.click();
-            // console.log(this.$refs.photoFile);
-      // this.fileModal = true;
+      this.$refs.pcPhotoFile.click();
     },
     // 修改图片尺寸
-      fileChange() {
-      console.log("输出files:", this.$refs.photoFile.files);
-      let file = null
-        if(this.isCamera){
-            file = this.$refs.cameraFile.files[0]//相机拍照的
-        }else{
-            file = this.$refs.photoFile.files[0] || this.$refs.pcPhotoFile.files[0];//相册选择的
-           
-        }
+    fileChange() {
+      // console.log("输出files:", this.$refs.photoFile.files);
+      let file = null;
+      if (this.isCamera) {
+        file = this.$refs.cameraFile.files[0]; //相机拍照的
+        console.log(file);
+        this.isCamera = false//关闭相机, 否则下次直接进入这里, 且获取不到值
+      } else {
+        // file = this.$refs.photoFile.files[0] | this.$refs.pcPhotoFile.files[0]; //相册选择的
+        // file = typeof this.$refs.pcPhotoFile.files[0] === 'undefined' ? this.$refs.photoFile.files[0] : this.$refs.pcPhotoFile.files[0];
+        file = this.$refs.photoFile.files[0]; //相册选择的
+        console.log(file);
+      }
       if (/.(png|jpg|jpeg|JPG|JPEG)$/.test(file.name)) {
         let fr = new FileReader();
         fr.readAsDataURL(file);
-        fr.onload = e => {
+        fr.onload = (e) => {
           // 将图像置于裁剪框中
           console.log("输出e:", e);
           this.option.img = e.target.result;
           this.fileModal = true;
           this.$refs.photoFile.value = "";
-          this.$refs.pcPhotoFile.value = "";
+          if (typeof this.$refs.pcPhotoFile !== 'undefined') {
+            this.$refs.pcPhotoFile.value = "";
+          }
           this.$refs.cameraFile.value = "";
         };
       } else {
         this.$message({
           message: "请选择符合格式要求的图片",
-          type: "warning"
+          type: "warning",
         });
         this.$refs.photoFile.value = "";
         this.$refs.pcPhotoFile.value = "";
-          this.$refs.cameraFile.value = "";
+        this.$refs.cameraFile.value = "";
       }
     },
     // 获取截图
-        submitPhoto() {
-          // 获取截图的base64数据
-      this.$refs.cropper.getCropData(data => {
+    submitPhoto() {
+      // 获取截图的base64数据
+      this.$refs.cropper.getCropData((data) => {
         // this.imgUrl = data
-      this.$store.commit('changeImgUrl',data)
+        this.$store.commit("changeImgUrl", data);
         this.$emit("imgUrl", "success");
         // console.log(data);
-        this.fileModal = false
-      })
+        this.fileModal = false;
+      });
     },
     // 设置截图框大小适应屏幕
     setSize() {
-      let width = window.innerWidth + 'px'
-       this.option.autoCropWidth = width
-       this.option.autoCropHeight = width
-    }
+      let width = window.innerWidth + "px";
+      this.option.autoCropWidth = width;
+      this.option.autoCropHeight = width;
+    },
   },
   mounted() {
-    this.setSize()
-  }
+    this.setSize();
+  },
 };
 </script>
 
