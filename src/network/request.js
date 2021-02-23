@@ -4,15 +4,15 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 19:55:24
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-19 23:06:41
+ * @LastEditTime: 2021-02-23 21:53:59
  */
 import axios from 'axios'
 // 考虑扩展性,不用default
 export function request(config) {
   // 1.创建axios实例
   const instance = axios.create({
-    baseURL: 'http://47.94.84.88:8989',
-    // baseURL: 'http://a.wpengsen.cn:8989',
+    // baseURL: 'http://127.0.0.1:8989',
+    baseURL: 'http:///192.168.3.6:8989',
     timeout: 5000, 
   })
   // instance({
