@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-28 16:17:42
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-23 16:24:30
+ * @LastEditTime: 2021-02-23 21:50:38
 -->
 <template>
   <div class="chooseImg">
@@ -55,10 +55,10 @@
           height="500"
         ></canvas>
       </v-row>
-      <!-- 功能按键 -->
+      <!-- 功能按键 , 退出-->
       <v-row align="center" class="mt-8" style="margin: auto; width: 500px">
         <v-col cols="4">
-          <v-btn icon @click="videoModal = false">
+          <v-btn icon @click="videoModal = false;isShow = false">
             <v-icon large> mdi-chevron-down </v-icon>
           </v-btn>
         </v-col>
