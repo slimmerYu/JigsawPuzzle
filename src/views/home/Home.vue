@@ -4,7 +4,7 @@
  * @Author: slimmerYu
  * @Date: 2021-01-06 19:53:02
  * @LastEditors: slimmerYu
- * @LastEditTime: 2021-02-23 21:41:17
+ * @LastEditTime: 2021-02-24 21:09:22
 -->
 <template>
   <div class="home">
@@ -496,7 +496,7 @@ export default {
     },
     // 自己拼图
     autoPlay() {
-      this.isAuto = true
+      this.isAuto = true;
       let level = this.stateLevel === 0 ? 3 : this.stateLevel === 1 ? 4 : 5;
       console.log("获取后台步骤数据");
       const _this = this;
@@ -885,7 +885,6 @@ export default {
           console.log(res);
           this.$store.commit("changeScore", res.data.data);
         });
-        
       }
     },
     // 是否通过
@@ -898,8 +897,8 @@ export default {
 
         console.log(_this.isAuto);
         _this.computeScore();
-        
-        _this.isAuto = false
+
+        _this.isAuto = false;
         _this.overlayAuto = false;
       }
       switch (this.stateLevel) {
@@ -1111,6 +1110,8 @@ export default {
       let _this = this;
 
       let btnTip = document.querySelector("#btnTip");
+
+      btnTip.classList.add("v-btn--disabled");
       let level = _this.stateLevel === 0 ? 3 : _this.stateLevel === 1 ? 4 : 5;
       autoPlay({ node: _.join(_this.statePuzzle, ","), num: level }).then(
         (res) => {
@@ -1119,7 +1120,7 @@ export default {
           if (res.data.code === 200) {
             let step = res.data.data.simpleProcess;
             // console.log(step[0]);
-              _this.clickBlock(step[1]);
+            _this.clickBlock(step[1]);
           }
         }
       );
@@ -1127,6 +1128,19 @@ export default {
       if (_this.tipStep === 0) {
         btnTip.classList.add("v-btn--disabled");
       }
+        let time = 5;
+        let timer = setInterval(() => {
+          if (time == 0) {
+            clearInterval(timer);
+            btnTip.classList.remove("v-btn--disabled");
+            btnTip.innerHTML = "提示";
+          } else {
+            btnTip.innerHTML = "提示 (" + time + ")";
+            // btnTip.classList.add("v-btn--disabled");
+  
+            time--;
+          }
+        }, 1000);
     },
   },
   mounted() {
